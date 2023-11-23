@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.data;
 
-import net.pullolo.magicabilities.powers.Power;
+import net.pullolo.magicabilities.powers.PowerType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class DbManager {
         return is;
     }
 
-    public void addPlayer(String name, Power power){
+    public void addPlayer(String name, PowerType powerType){
         try{
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
@@ -72,7 +72,7 @@ public class DbManager {
 
             PreparedStatement stmt = conn.prepareStatement(insert);
             stmt.setString(1, name);
-            stmt.setString(2, power.toString());
+            stmt.setString(2, powerType.toString());
             stmt.execute();
 
             stmt.close();
@@ -85,7 +85,7 @@ public class DbManager {
     public PlayerData getPlayerData(String playerName) {
         PlayerData pd = null;
         if (!isPlayerInDb(playerName)){
-            addPlayer(playerName, Power.NONE);
+            addPlayer(playerName, PowerType.NONE);
         }
         try{
             Class.forName("org.sqlite.JDBC");
@@ -94,7 +94,7 @@ public class DbManager {
             stmt.setString(1, playerName);
 
             ResultSet rs = stmt.executeQuery();
-            pd = new PlayerData(playerName, Power.valueOf(rs.getString("power")));
+            pd = new PlayerData(playerName, PowerType.valueOf(rs.getString("power")));
 
             stmt.close();
             conn.close();

@@ -1,5 +1,5 @@
 package net.pullolo.magicabilities.powers;
 
-public enum Power {
+public enum PowerType {
     NONE
 }

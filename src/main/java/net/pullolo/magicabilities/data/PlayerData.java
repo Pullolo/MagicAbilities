@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.data;
 
-import net.pullolo.magicabilities.powers.Power;
+import net.pullolo.magicabilities.powers.PowerType;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -8,11 +8,11 @@ import java.util.HashMap;
 public class PlayerData {
     private static final HashMap<Player, PlayerData> playerData = new HashMap<>();
     private final String name;
-    private Power power;
+    private PowerType powerType;
 
-    public PlayerData(String name, Power power) {
+    public PlayerData(String name, PowerType powerType) {
         this.name = name;
-        this.power = power;
+        this.powerType = powerType;
     }
     public static PlayerData getPlayerData(Player p){
         return playerData.get(p);
@@ -32,11 +32,11 @@ public class PlayerData {
         return name;
     }
 
-    public Power getPower() {
-        return power;
+    public PowerType getPower() {
+        return powerType;
     }
 
-    public void setPower(Power power) {
-        this.power = power;
+    public void setPower(PowerType powerType) {
+        this.powerType = powerType;
     }
 }
