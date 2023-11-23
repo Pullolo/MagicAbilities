@@ -1,0 +1,4 @@
+name: MagicAbilities
+version: '${project.version}'
+main: net.pullolo.magicabilities.MagicAbilities
+api-version: '1.20'
