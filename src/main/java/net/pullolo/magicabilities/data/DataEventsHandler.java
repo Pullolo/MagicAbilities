@@ -1,11 +1,14 @@
 package net.pullolo.magicabilities.data;
 
+import net.pullolo.magicabilities.players.PowerPlayer;
+import net.pullolo.magicabilities.powers.Power;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import static net.pullolo.magicabilities.data.PlayerData.*;
+import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class DataEventsHandler implements Listener {
     private final DbManager dbManager;
@@ -20,6 +23,7 @@ public class DataEventsHandler implements Listener {
             event.getPlayer().kickPlayer("Invalid Name!");
         }
         setPlayerDataFromDb(event.getPlayer(), dbManager);
+        new PowerPlayer(Power.getPowerFromPowerType(event.getPlayer(), getPlayerData(event.getPlayer()).getPower()));
         //getPlayerQuestsOnJoin(event.getPlayer());
     }
 
@@ -28,5 +32,7 @@ public class DataEventsHandler implements Listener {
         //savePlayerQuestsOnLeave(event.getPlayer());
         savePlayerDataToDb(event.getPlayer(), dbManager);
         removePlayerData(event.getPlayer());
+        players.get(event.getPlayer()).remove();
+        players.remove(event.getPlayer());
     }
 }
