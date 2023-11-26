@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.HashMap;
 
 public class DbManager {
     private Connection conn;
@@ -27,6 +28,10 @@ public class DbManager {
             Statement stmt = conn.createStatement();
             String sql = "create table if not exists powers (name TEXT PRIMARY KEY NOT NULL, power TEXT NOT NULL);";
             stmt.execute(sql);
+            String sql2 = "create table if not exists binds (name TEXT PRIMARY KEY NOT NULL," +
+                    " ab0 INT NOT NULL, ab1 INT NOT NULL, ab2 INT NOT NULL, ab3 INT NOT NULL, ab4 INT NOT NULL, ab5 INT NOT NULL," +
+                    " ab6 INT NOT NULL, ab7 INT NOT NULL, ab8 INT NOT NULL);";
+            stmt.execute(sql2);
             stmt.close();
             conn.close();
             return true;
@@ -69,13 +74,18 @@ public class DbManager {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
             String insert = "insert into powers (name, power) values" +
                     " (?, ?);";
+            String insert2 = "insert into binds (name, ab0, ab1, ab2, ab3, ab4, ab5, ab6, ab7, ab8) values" +
+                    " (?, 0, 1, 2, 3, 4, 5, 6, 7, 8);";
 
             PreparedStatement stmt = conn.prepareStatement(insert);
             stmt.setString(1, name);
             stmt.setString(2, powerType.toString());
             stmt.execute();
-
             stmt.close();
+            PreparedStatement stmt2 = conn.prepareStatement(insert2);
+            stmt2.setString(1, name);
+            stmt2.execute();
+            stmt2.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,9 +102,16 @@ public class DbManager {
             Connection conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
             PreparedStatement stmt = conn.prepareStatement("select * from powers where name=?;");
             stmt.setString(1, playerName);
+            PreparedStatement stmt2 = conn.prepareStatement("select * from binds where name=?;");
+            stmt2.setString(1, playerName);
 
             ResultSet rs = stmt.executeQuery();
-            pd = new PlayerData(playerName, PowerType.valueOf(rs.getString("power")));
+            ResultSet rs2 = stmt2.executeQuery();
+            HashMap<Integer, Integer> binds = new HashMap<>();
+            for (int i = 0; i<9; i++){
+                binds.put(i, rs2.getInt("ab"+i));
+            }
+            pd = new PlayerData(playerName, PowerType.valueOf(rs.getString("power")), binds);
 
             stmt.close();
             conn.close();
@@ -114,8 +131,22 @@ public class DbManager {
             stmt.setString(1, pd.getPower().toString());
             stmt.setString(2, name);
             stmt.execute();
-
             stmt.close();
+
+            String sql = "update binds set ";
+            for (int i = 0; i < 9; i++){
+                if (i==8){
+                    sql+="ab"+i+"="+pd.getBinds().get(i);
+                } else {
+                    sql+="ab"+i+"="+pd.getBinds().get(i)+", ";
+                }
+            }
+            sql += " where name=?;";
+
+            PreparedStatement stmt2 = conn.prepareStatement(sql);
+            stmt2.setString(1, name);
+            stmt2.execute();
+            stmt2.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -34,7 +34,7 @@ public class DataEventsHandler implements Listener {
             event.getPlayer().kickPlayer("Invalid Name!");
         }
         setPlayerDataFromDb(event.getPlayer(), dbManager);
-        new PowerPlayer(Power.getPowerFromPowerType(event.getPlayer(), getPlayerData(event.getPlayer()).getPower()));
+        new PowerPlayer(Power.getPowerFromPowerType(event.getPlayer(), getPlayerData(event.getPlayer()).getPower()), getPlayerData(event.getPlayer()).getBinds());
         //getPlayerQuestsOnJoin(event.getPlayer());
     }
 

@@ -2,3 +2,7 @@ name: MagicAbilities
 version: '${project.version}'
 main: net.pullolo.magicabilities.MagicAbilities
 api-version: '1.20'
+commands:
+  binds:
+    description: Change ability binds
+    usage: /<command> <change/reset> <ability> <slot>

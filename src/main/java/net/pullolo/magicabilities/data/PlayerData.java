@@ -9,10 +9,12 @@ public class PlayerData {
     private static final HashMap<Player, PlayerData> playerData = new HashMap<>();
     private final String name;
     private PowerType powerType;
+    private HashMap<Integer, Integer> binds;
 
-    public PlayerData(String name, PowerType powerType) {
+    public PlayerData(String name, PowerType powerType, HashMap<Integer, Integer> binds) {
         this.name = name;
         this.powerType = powerType;
+        this.binds = binds;
     }
     public static PlayerData getPlayerData(Player p){
         return playerData.get(p);
@@ -38,5 +40,13 @@ public class PlayerData {
 
     public void setPower(PowerType powerType) {
         this.powerType = powerType;
+    }
+
+    public HashMap<Integer, Integer> getBinds() {
+        return binds;
+    }
+
+    public void setBinds(HashMap<Integer, Integer> binds) {
+        this.binds = binds;
     }
 }

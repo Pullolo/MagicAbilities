@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
@@ -84,7 +85,7 @@ public class IcePower extends Power implements IdlePower {
         if (!p.equals(getOwner())){
             throw new RuntimeException("Event player does not match the power owner!");
         }
-        switch (players.get(p).getActiveSlot()){
+        switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
                 if (CooldownApi.isOnCooldown("ICE-DEF", p)) return;
                 shootIce(ex, 1, 0);
@@ -447,7 +448,7 @@ public class IcePower extends Power implements IdlePower {
                     return;
             }
         }
-        if (b.isPassable() && !b.isLiquid()){
+        if (b.getType().equals(Material.AIR)){
             if (sb.getType().equals(Material.FROSTED_ICE) || sb.getType().equals(Material.ICE) || sb.getType().equals(Material.OBSIDIAN) || sb.getType().equals(Material.SNOW)){
                 return;
             }

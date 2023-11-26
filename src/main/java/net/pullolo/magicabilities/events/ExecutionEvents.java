@@ -24,7 +24,7 @@ public class ExecutionEvents implements Listener {
         if (!players.containsKey(p)){
             return;
         }
-        if (!event.getHand().equals(EquipmentSlot.HAND)){
+        if (event.getHand()==null || !event.getHand().equals(EquipmentSlot.HAND)){
             return;
         }
         Power pow = players.get(p).getPower();

@@ -1,5 +1,6 @@
 package net.pullolo.magicabilities;
 
+import net.pullolo.magicabilities.commands.Binds;
 import net.pullolo.magicabilities.data.DataEventsHandler;
 import net.pullolo.magicabilities.data.DbManager;
 import net.pullolo.magicabilities.data.PlayerData;
@@ -10,6 +11,8 @@ import net.pullolo.magicabilities.misc.CooldownApi;
 import net.pullolo.magicabilities.misc.ParticleApi;
 import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +43,7 @@ public final class MagicAbilities extends JavaPlugin {
         createCooldowns();
         getServer().getPluginManager().registerEvents(new DataEventsHandler(dbManager), this);
         getServer().getPluginManager().registerEvents(new ExecutionEvents(), this);
+        registerCommand(new Binds(), "binds");
         final GuiManager guiManager = new GuiManager(this);
         final AnimationManager animationManager = new AnimationManager(this, guiManager);
     }
@@ -48,6 +52,15 @@ public final class MagicAbilities extends JavaPlugin {
     public void onDisable() {
         dbManager.disconnect();
         savePlayers(dbManager);
+    }
+
+    private void registerCommand(CommandExecutor cmd, String cmdName){
+        if (cmd instanceof TabCompleter){
+            getCommand(cmdName).setExecutor(cmd);
+            getCommand(cmdName).setTabCompleter((TabCompleter) cmd);
+        } else {
+            throw new RuntimeException("Provided object is not a command executor and a tab completer at the same time!");
+        }
     }
 
     public static Logger getLog(){
@@ -70,7 +83,7 @@ public final class MagicAbilities extends JavaPlugin {
     private void setPlayerData(DbManager db){
         for (Player p : getServer().getOnlinePlayers()){
             PlayerData.setPlayerDataFromDb(p, db);
-            new PowerPlayer(Power.getPowerFromPowerType(p, getPlayerData(p).getPower()));
+            new PowerPlayer(Power.getPowerFromPowerType(p, getPlayerData(p).getPower()), getPlayerData(p).getBinds());
             //QuestManager.getPlayerQuestsOnJoin(p);
         }
     }
