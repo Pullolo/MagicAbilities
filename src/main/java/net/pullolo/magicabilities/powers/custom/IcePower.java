@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -23,11 +24,6 @@ import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class IcePower extends Power implements IdlePower {
-//    private static ArrayList<Biome> coldBiomes = new ArrayList<>();
-//    public static void init(){
-//        coldBiomes.add(Biome.CHERRY_GROVE);
-//        coldBiomes.add(Biome.CHERRY_GROVE);
-//    }
     public IcePower(Player owner) {
         super(owner);
     }
@@ -53,6 +49,27 @@ public class IcePower extends Power implements IdlePower {
             executeRightClick((RightClickExecute) ex);
             return;
         }
+        if (ex instanceof DamagedExecute){
+            executeDamaged((DamagedExecute) ex);
+            return;
+        }
+    }
+
+    private void executeDamaged(DamagedExecute execute){
+        EntityDamageEvent event = (EntityDamageEvent) execute.getRawEvent();
+        final Player p = execute.getPlayer();
+        if (!p.equals(getOwner())){
+            throw new RuntimeException("Event player does not match the power owner!");
+        }
+        if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
+            if (p.getLocation().clone().add(0, -1, 0).getBlock().getType().equals(Material.ICE)
+                    || p.getLocation().clone().add(0, -1, 0).getBlock().getType().equals(Material.SNOW_BLOCK)
+                    || p.getLocation().clone().add(0, -1, 0).getBlock().getType().equals(Material.FROSTED_ICE)
+                    || p.getLocation().clone().getBlock().getType().equals(Material.SNOW)
+            ){
+                event.setCancelled(true);
+            }
+        }
     }
 
     private void executeRightClick(RightClickExecute ex){
@@ -70,7 +87,7 @@ public class IcePower extends Power implements IdlePower {
         switch (players.get(p).getActiveSlot()){
             case 0:
                 if (CooldownApi.isOnCooldown("ICE-DEF", p)) return;
-                shootIce(ex, 1);
+                shootIce(ex, 1, 0);
                 CooldownApi.addCooldown("ICE-DEF", p, 1);
                 return;
             case 1:
@@ -79,7 +96,7 @@ public class IcePower extends Power implements IdlePower {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            shootIce(ex, 0.5);
+                            shootIce(ex, 0.6, 0);
                         }
                     }.runTaskLater(magicPlugin, i*10);
                 }
@@ -95,6 +112,15 @@ public class IcePower extends Power implements IdlePower {
                 explode(ex, 1.4);
                 CooldownApi.addCooldown("ICE-3", p, 10);
                 return;
+            case 4:
+                if (CooldownApi.isOnCooldown("ICE-4", p)) return;
+                int rotation = -20;
+                for (int i = 1; i<5; i++){
+                    shootIce(ex, 0.8, rotation);
+                    rotation+=10;
+                }
+                CooldownApi.addCooldown("ICE-4", p, 3);
+                return;
             case 8:
                 if (CooldownApi.isOnCooldown("ICE-8", p)) return;
                 phaseChange(ex);
@@ -109,12 +135,13 @@ public class IcePower extends Power implements IdlePower {
         for (Entity entity : p.getNearbyEntities(5, 5, 5)){
             if (!entity.equals(p)){
                 if (entity instanceof LivingEntity){
-                    ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM));
+                    ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM), p);
                     entity.setFreezeTicks(entity.getMaxFreezeTicks()*6);
                     spawnSpellHitParticles(p.getLocation().clone().add(0, 1,0));
                 }
             }
         }
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.9f+new Random().nextFloat());
         particleApi.spawnParticles(p.getLocation(), Particle.FIREWORKS_SPARK, 60, 0.01, 0.01, 0.01, 0.5);
         particleApi.spawnParticles(p.getLocation(), Particle.SNOWFLAKE, 60, 0.01, 0.01, 0.01, 0.3);
         spawnIceSpikesParticles(p.getLocation().clone().add(0, 1, 0));
@@ -183,7 +210,7 @@ public class IcePower extends Power implements IdlePower {
                                 }
                                 if (!entity.equals(p)){
                                     if (entity instanceof LivingEntity){
-                                        ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM));
+                                        ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM), p);
                                         entity.setFreezeTicks(entity.getMaxFreezeTicks()*6);
                                         spawnSpellHitParticles(ground.clone().add(0, 1,0));
                                     }
@@ -214,7 +241,7 @@ public class IcePower extends Power implements IdlePower {
         }.runTaskLater(magicPlugin, 10);
     }
 
-    private void shootIce(LeftClickExecute execute, double initM){
+    private void shootIce(LeftClickExecute execute, double initM, int vectorRotate){
         Player p = execute.getPlayer();
         ArmorStand as = p.getWorld().spawn(p.getLocation().add(0, 1.5, 0), ArmorStand.class, en -> {
             en.setVisible(false);
@@ -223,7 +250,7 @@ public class IcePower extends Power implements IdlePower {
             en.setMarker(true);
         });
 
-        Location dest = p.getLocation().add(p.getLocation().getDirection().multiply(10));
+        Location dest = p.getLocation().add(GeneralMethods.rotateVector(p.getLocation().getDirection(), vectorRotate).multiply(10));
         Vector v = dest.subtract(p.getLocation()).toVector();
 
         double s = 1;
@@ -259,7 +286,7 @@ public class IcePower extends Power implements IdlePower {
                         if (as.getLocation().distanceSquared(entity.getLocation()) <= 3.8){
                             if (!entity.equals(p)){
                                 if (entity instanceof LivingEntity){
-                                    ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM));
+                                    ((LivingEntity) entity).damage(calculateDamage(p, (LivingEntity) entity, initM), p);
                                     entity.setFreezeTicks(entity.getMaxFreezeTicks()*6);
                                     spawnSpellHitParticles(as.getLocation().clone());
                                     as.remove();
@@ -385,14 +412,14 @@ public class IcePower extends Power implements IdlePower {
 
     private double calculateDamage(Player p, LivingEntity damaged, double m){
         if (p.getLocation().getBlock().getTemperature()<0.5){
-            m=m*1.7;
+            m=m*1.8;
         } else if (p.getLocation().getBlock().getTemperature()>0.94){
-            m=m*0.2;
+            m=m*0.3;
         }
         if (damaged.isFrozen()){
-            return 8.0*m;
+            return 9.0*m;
         }
-        return 12.0*m;
+        return 13.0*m;
     }
 
     private void setColdBlock(Location loc, Player p){
@@ -435,6 +462,7 @@ public class IcePower extends Power implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
+                p.setFreezeTicks(0);
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
                         Particle.SNOWFLAKE, 5, 0.3, 0.3, 0.3, 0.01);
             }

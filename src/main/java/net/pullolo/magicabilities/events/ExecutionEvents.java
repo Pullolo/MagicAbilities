@@ -1,15 +1,13 @@
 package net.pullolo.magicabilities.events;
 
 import net.pullolo.magicabilities.powers.Power;
-import net.pullolo.magicabilities.powers.executions.DamagedByExecute;
-import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
-import net.pullolo.magicabilities.powers.executions.MoveExecute;
-import net.pullolo.magicabilities.powers.executions.RightClickExecute;
+import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -62,5 +60,17 @@ public class ExecutionEvents implements Listener {
             return;
         }
         players.get(p).getPower().executePower(new DamagedByExecute(event, p));
+    }
+
+    @EventHandler
+    public void onDamaged(EntityDamageEvent event){
+        if (!(event.getEntity() instanceof Player)){
+            return;
+        }
+        Player p = (Player) event.getEntity();
+        if (!players.containsKey(p)){
+            return;
+        }
+        players.get(p).getPower().executePower(new DamagedExecute(event, p));
     }
 }
