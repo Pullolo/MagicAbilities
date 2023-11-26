@@ -45,7 +45,7 @@ public class PowerPlayer {
     }
 
     public void remove(){
-        idlePower.cancel();
+        if (idlePower!=null) idlePower.cancel();
         idlePower=null;
     }
 
