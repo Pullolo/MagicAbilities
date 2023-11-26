@@ -462,6 +462,9 @@ public class IcePower extends Power implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
+                if (p.getFireTicks()>20){
+                    p.setFireTicks(20);
+                }
                 p.setFreezeTicks(0);
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
                         Particle.SNOWFLAKE, 5, 0.3, 0.3, 0.3, 0.01);
