@@ -15,6 +15,7 @@ public class PowerPlayer {
     public static final HashMap<Player, PowerPlayer> players = new HashMap<>();
 
     private Power power;
+    private int activeSlot = 0;
     private BukkitRunnable idlePower = null;
 
     public PowerPlayer(Power power) {
@@ -46,5 +47,13 @@ public class PowerPlayer {
     public void remove(){
         idlePower.cancel();
         idlePower=null;
+    }
+
+    public int getActiveSlot() {
+        return activeSlot;
+    }
+
+    public void setActiveSlot(int activeSlot) {
+        this.activeSlot = activeSlot;
     }
 }

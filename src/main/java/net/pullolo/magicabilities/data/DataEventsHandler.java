@@ -4,9 +4,12 @@ import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
+import static net.pullolo.magicabilities.MagicAbilities.debugLog;
 import static net.pullolo.magicabilities.data.PlayerData.*;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
@@ -15,6 +18,14 @@ public class DataEventsHandler implements Listener {
 
     public DataEventsHandler(DbManager dbManager) {
         this.dbManager = dbManager;
+    }
+
+    @EventHandler
+    public void onSlotSwap(PlayerItemHeldEvent event){
+        if (!players.containsKey(event.getPlayer())){
+            return;
+        }
+        players.get(event.getPlayer()).setActiveSlot(event.getNewSlot());
     }
 
     @EventHandler

@@ -6,6 +6,7 @@ import net.pullolo.magicabilities.data.PlayerData;
 import net.pullolo.magicabilities.events.ExecutionEvents;
 import net.pullolo.magicabilities.guis.AnimationManager;
 import net.pullolo.magicabilities.guis.GuiManager;
+import net.pullolo.magicabilities.misc.CooldownApi;
 import net.pullolo.magicabilities.misc.ParticleApi;
 import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
@@ -85,6 +86,10 @@ public final class MagicAbilities extends JavaPlugin {
     }
 
     private void createCooldowns(){
-
+        CooldownApi.createCooldown("ICE-DEF", 1);
+        CooldownApi.createCooldown("ICE-1", 6.5);
+        CooldownApi.createCooldown("ICE-2", 1.6);
+        CooldownApi.createCooldown("ICE-3", 10);
+        CooldownApi.createCooldown("ICE-8", 5);
     }
 }
