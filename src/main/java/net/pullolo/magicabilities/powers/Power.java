@@ -1,6 +1,7 @@
 package net.pullolo.magicabilities.powers;
 
 import net.pullolo.magicabilities.powers.custom.IcePower;
+import net.pullolo.magicabilities.powers.custom.WarpPower;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,8 @@ public abstract class Power {
         switch (powerType){
             case ICE:
                 return new IcePower(p);
+            case WARP:
+                return new WarpPower(p);
             default:
                 return new Power(p) {
                     @Override

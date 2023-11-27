@@ -46,6 +46,7 @@ public class Binds implements CommandExecutor, TabCompleter {
                     int s2 = Integer.parseInt(args[2]);
 
                     players.get(p).changeBind(s1, s2);
+                    p.sendMessage(ChatColor.GREEN + "Changed!");
                     return true;
                 } catch (Exception e){
                     p.sendMessage(ChatColor.RED + "Something went wrong!");

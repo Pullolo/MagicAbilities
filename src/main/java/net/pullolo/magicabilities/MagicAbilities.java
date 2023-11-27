@@ -1,6 +1,7 @@
 package net.pullolo.magicabilities;
 
 import net.pullolo.magicabilities.commands.Binds;
+import net.pullolo.magicabilities.commands.Destination;
 import net.pullolo.magicabilities.data.DataEventsHandler;
 import net.pullolo.magicabilities.data.DbManager;
 import net.pullolo.magicabilities.data.PlayerData;
@@ -44,6 +45,7 @@ public final class MagicAbilities extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DataEventsHandler(dbManager), this);
         getServer().getPluginManager().registerEvents(new ExecutionEvents(), this);
         registerCommand(new Binds(), "binds");
+        registerCommand(new Destination(), "destination");
         final GuiManager guiManager = new GuiManager(this);
         final AnimationManager animationManager = new AnimationManager(this, guiManager);
     }
@@ -105,5 +107,6 @@ public final class MagicAbilities extends JavaPlugin {
         CooldownApi.createCooldown("ICE-3", 10);
         CooldownApi.createCooldown("ICE-4", 3);
         CooldownApi.createCooldown("ICE-8", 5);
+        CooldownApi.createCooldown("WARP-DEF", 300);
     }
 }

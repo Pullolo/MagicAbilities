@@ -6,3 +6,6 @@ commands:
   binds:
     description: Change ability binds
     usage: /<command> <change/reset> <ability> <slot>
+  destination:
+    description: Set destination
+    usage: /<command> <dest>
