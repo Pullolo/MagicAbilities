@@ -64,7 +64,7 @@ public class WarpPower extends Power {
                 spawnPortalParticles(l);
                 for (Entity e : l.getWorld().getNearbyEntities(l, 1, 1, 1)){
                     if (tped.contains(e)) continue;
-                    ((Player) e).playSound(e.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1.3f);
+                    if (e instanceof Player) ((Player) e).playSound(e.getLocation(), Sound.BLOCK_END_PORTAL_FRAME_FILL, 1, 1.3f);
                     e.teleport(dest);
                     tped.add(e);
                     new BukkitRunnable() {
