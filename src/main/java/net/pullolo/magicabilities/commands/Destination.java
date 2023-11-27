@@ -81,12 +81,12 @@ public class Destination implements CommandExecutor, TabCompleter {
         }
         if (args.length==2){
             ArrayList<String> completion = new ArrayList<>();
-            addToCompletion(String.valueOf(p.getLocation().getX()), args[1], completion);
+            addToCompletion(String.valueOf(p.getLocation().getY()), args[1], completion);
             return completion;
         }
         if (args.length==3){
             ArrayList<String> completion = new ArrayList<>();
-            addToCompletion(String.valueOf(p.getLocation().getX()), args[2], completion);
+            addToCompletion(String.valueOf(p.getLocation().getZ()), args[2], completion);
             return completion;
         }
         return new ArrayList<>();

@@ -36,7 +36,7 @@ public class PowerPlayer {
     }
 
     public void changePower(PowerType power){
-        idlePower.cancel();
+        if (idlePower!=null) idlePower.cancel();
         idlePower=null;
         Player owner = this.power.getOwner();
         getPlayerData(owner).setPower(power);

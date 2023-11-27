@@ -9,3 +9,7 @@ commands:
   destination:
     description: Set destination
     usage: /<command> <dest>
+  setpower:
+    description: Set power
+    usage: /<command> <player> <power>
+    permission: magic.admin
