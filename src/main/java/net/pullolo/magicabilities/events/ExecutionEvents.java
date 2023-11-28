@@ -63,6 +63,18 @@ public class ExecutionEvents implements Listener {
     }
 
     @EventHandler
+    public void onDamageDealt(EntityDamageByEntityEvent event){
+        if (!(event.getDamager() instanceof Player)){
+            return;
+        }
+        Player p = (Player) event.getDamager();
+        if (!players.containsKey(p)){
+            return;
+        }
+        players.get(p).getPower().executePower(new DealDamageExecute(event, p));
+    }
+
+    @EventHandler
     public void onDamaged(EntityDamageEvent event){
         if (!(event.getEntity() instanceof Player)){
             return;

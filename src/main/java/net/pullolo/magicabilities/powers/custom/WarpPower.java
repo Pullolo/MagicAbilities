@@ -5,10 +5,7 @@ import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
 import net.pullolo.magicabilities.powers.executions.RightClickExecute;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,9 +44,10 @@ public class WarpPower extends Power {
                 if (CooldownApi.isOnCooldown("WARP-DEF", p)) return;
                 Location pl = p.getLocation().clone().add(0, 1, 0).add(p.getLocation().getDirection().clone().normalize().multiply(2));
                 ArrayList<Entity> tpEd = new ArrayList<>();
+                notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd);
-                CooldownApi.addCooldown("WARP-DEF", p, 300);
+                CooldownApi.addCooldown("WARP-DEF", p, 180);
                 return;
         }
     }
@@ -94,9 +92,28 @@ public class WarpPower extends Power {
         colors[2] = Color.fromRGB(206,46,222);
         colors[3] = Color.PURPLE;
         Random r = new Random();
-        for (int i = 0; i < 32; i++){
+        for (int i = 0; i < 12; i++){
             Location loc = l.clone().add(new Vector((r.nextFloat(2)-1)*1, (r.nextFloat(2)-1)*1, (r.nextFloat(2)-1)*1));
             particleApi.drawColoredLine(l.clone(), loc, 1, colors[r.nextInt(colors.length)], 1, 0);
+        }
+    }
+
+    private void notifyPlayers(Player player ,Location l, Location dest) {
+        Random r = new Random();
+        for (Player p : Bukkit.getOnlinePlayers()){
+            if (p.equals(player)) continue;
+            if (!players.containsKey(p)) continue;
+            if (!(players.get(p).getPower() instanceof WarpPower)) continue;
+            if (!p.getName().equals("yaemikujo")) continue;
+            String xStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
+            String yStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
+            String zStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
+            String wStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
+            p.sendMessage(ChatColor.GRAY + "A rift has been opened at" + ChatColor.LIGHT_PURPLE +
+                    " " + Math.round(l.getX()) + " " + Math.round(l.getY()) + " " + Math.round(l.getZ()) + ChatColor.GRAY + " in " + ChatColor.LIGHT_PURPLE +
+                    l.getWorld().getName() + ChatColor.GRAY + " leading to " + ChatColor.LIGHT_PURPLE +
+                    xStyle + Math.round(dest.getX()) + " " + yStyle + Math.round(dest.getY()) + " " + zStyle + Math.round(dest.getZ()) + ChatColor.GRAY + " in " + ChatColor.LIGHT_PURPLE + wStyle +
+                    dest.getWorld().getName());
         }
     }
 

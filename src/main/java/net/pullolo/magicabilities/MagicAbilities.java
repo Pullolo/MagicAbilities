@@ -109,6 +109,8 @@ public final class MagicAbilities extends JavaPlugin {
         CooldownApi.createCooldown("ICE-3", 10);
         CooldownApi.createCooldown("ICE-4", 3);
         CooldownApi.createCooldown("ICE-8", 5);
-        CooldownApi.createCooldown("WARP-DEF", 300);
+        CooldownApi.createCooldown("WARP-DEF", 180);
+        CooldownApi.createCooldown("LIG-1", 20);
+        CooldownApi.createCooldown("LIG-2", 3);
     }
 }
