@@ -186,12 +186,12 @@ public class UnstablePower extends WarpPower implements IdlePower {
     private void switchDim(Player p) {
         List<World> worlds = Bukkit.getWorlds();
         worlds.remove(p.getWorld());
-        dest=new Location(worlds.get(random.nextInt(worlds.size())), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()).add(0, 1, 0);
+        Location d = new Location(worlds.get(random.nextInt(worlds.size())), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()).add(0, 1, 0);
         ArrayList<Entity> entities = new ArrayList<>();
         Location l = p.getLocation().clone();
-        notifyPlayers(p, l, getDest().clone().add(0, 1, 0).clone().add(0, 1, 0));
-        openRift(l, getDest().clone().add(0, 1, 0), entities, 5);
-        openRift(getDest().clone().add(0, 1, 0), l, entities, 5);
+        notifyPlayers(p, l, d.clone().add(0, 1, 0).clone().add(0, 1, 0));
+        openRift(l, d.clone().add(0, 1, 0), entities, 5);
+        openRift(d.clone().add(0, 1, 0), l, entities, 5);
         particleApi.spawnParticles(p.getLocation(), Particle.ELECTRIC_SPARK, 100, 1, 1, 1, 0.5);
         p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 2));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 2));
