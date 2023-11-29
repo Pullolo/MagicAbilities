@@ -191,7 +191,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
         worlds.remove(p.getWorld());
         Location d = new Location(worlds.get(random.nextInt(worlds.size())), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()).add(0, 1, 0);
         ArrayList<Entity> entities = new ArrayList<>();
-        Location l = p.getLocation().clone();
+        Location l = p.getLocation().clone().add(0, 1, 0);
         notifyPlayers(p, l, d.clone().add(0, 1, 0).clone().add(0, 1, 0));
         openRift(l, d.clone().add(0, 1, 0), entities, 5);
         openRift(d.clone().add(0, 1, 0), l, entities, 5);
