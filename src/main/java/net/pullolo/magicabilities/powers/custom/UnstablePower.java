@@ -28,10 +28,8 @@ import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class UnstablePower extends WarpPower implements IdlePower {
     private final Random random = new Random();
-    private int unstable;
     public UnstablePower(Player owner) {
         super(owner);
-        unstable = 10 - ((int) owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/2);
     }
 
     @Override
@@ -172,7 +170,6 @@ public class UnstablePower extends WarpPower implements IdlePower {
             event.setKeepLevel(true);
             event.getDrops().clear();
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()-2);
-            unstable++;
         }
     }
 
@@ -180,7 +177,6 @@ public class UnstablePower extends WarpPower implements IdlePower {
         particleApi.spawnParticles(p.getLocation(), Particle.VILLAGER_HAPPY, 30, 0.3, 0.3, 0.3, 1);
         if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()<20){
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()+2);
-            unstable--;
         }
         if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()>20){
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
@@ -225,17 +221,13 @@ public class UnstablePower extends WarpPower implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                if (unstable<0) unstable = 0;
-                if (unstable>0){
-                    //debugLog(String.valueOf(10-unstable), true);
-                    if (random.nextInt(10-unstable)==0){
-                        glitch(p, 5, 4);
-                    }
+                if (random.nextInt(10)==0){
+                    glitch(p, 5, 4);
                 }
-                if (random.nextInt(100-(unstable))==0){
+                if (random.nextInt(100)==0){
                     switchDim(p);
                 }
-                if (random.nextInt(120-(unstable))==0){
+                if (random.nextInt(120)==0){
                     p.getWorld().spawn(p.getLocation(), LightningStrike.class);
                 }
 
