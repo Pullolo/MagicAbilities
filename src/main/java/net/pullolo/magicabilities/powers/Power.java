@@ -29,6 +29,8 @@ public abstract class Power {
                 return new LightningPower(p);
             case UNSTABLE:
                 return new UnstablePower(p);
+            case ALCOHOLIZM:
+                return new AlcoholizmPower(p);
             default:
                 return new Power(p) {
                     @Override
