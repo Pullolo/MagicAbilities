@@ -227,7 +227,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
             public void run() {
                 if (unstable<0) unstable = 0;
                 if (unstable>0){
-                    debugLog(String.valueOf(10-unstable), true);
+                    //debugLog(String.valueOf(10-unstable), true);
                     if (random.nextInt(10-unstable)==0){
                         glitch(p, 5, 4);
                     }
