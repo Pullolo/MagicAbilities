@@ -99,12 +99,12 @@ public class WarpPower extends Power {
     }
 
     private void notifyPlayers(Player player ,Location l, Location dest) {
+        if (this instanceof SuperiorWarpPower) return;
         Random r = new Random();
         for (Player p : Bukkit.getOnlinePlayers()){
             if (p.equals(player)) continue;
             if (!players.containsKey(p)) continue;
-            if (!(players.get(p).getPower() instanceof WarpPower)) continue;
-            if (!p.getName().equals("yaemikujo")) continue;
+            if (!(players.get(p).getPower() instanceof SuperiorWarpPower)) continue;
             String xStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
             String yStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";
             String zStyle = r.nextBoolean() ? ChatColor.MAGIC + "" : "";

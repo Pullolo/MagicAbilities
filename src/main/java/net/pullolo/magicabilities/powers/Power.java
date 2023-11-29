@@ -2,6 +2,7 @@ package net.pullolo.magicabilities.powers;
 
 import net.pullolo.magicabilities.powers.custom.IcePower;
 import net.pullolo.magicabilities.powers.custom.LightningPower;
+import net.pullolo.magicabilities.powers.custom.SuperiorWarpPower;
 import net.pullolo.magicabilities.powers.custom.WarpPower;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import org.bukkit.entity.Player;
@@ -25,6 +26,8 @@ public abstract class Power {
                 return new IcePower(p);
             case WARP:
                 return new WarpPower(p);
+            case SUPERIOR_WARP:
+                return new SuperiorWarpPower(p);
             case LIGHTNING:
                 return new LightningPower(p);
             default:

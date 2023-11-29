@@ -4,16 +4,14 @@ import net.pullolo.magicabilities.misc.CooldownApi;
 import net.pullolo.magicabilities.misc.GeneralMethods;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
-import net.pullolo.magicabilities.powers.executions.DealDamageExecute;
-import net.pullolo.magicabilities.powers.executions.Execute;
-import net.pullolo.magicabilities.powers.executions.IdleExecute;
-import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
+import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,6 +41,15 @@ public class LightningPower extends Power implements IdlePower {
             dealDamageExecute((DealDamageExecute) ex);
             return;
         }
+        if (ex instanceof DamagedExecute){
+            preventSelfDamage((DamagedExecute) ex);
+            return;
+        }
+    }
+
+    private void preventSelfDamage(DamagedExecute execute){
+        EntityDamageEvent event = (EntityDamageEvent) execute.getRawEvent();
+        if (event.getCause().equals(EntityDamageEvent.DamageCause.LIGHTNING)) event.setCancelled(true);
     }
 
     private void dealDamageExecute(DealDamageExecute execute){
@@ -110,7 +117,7 @@ public class LightningPower extends Power implements IdlePower {
                 if (i > 3){
                     particleApi.spawnParticles(dest, Particle.ELECTRIC_SPARK, 30, 0.1, 0.1,0.1, 1);
                     particleApi.spawnColoredParticles(dest, Color.BLUE, 2, 20, 1,1, 1);
-                    p.playSound(p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(3)),
+                    p.getWorld().playSound(p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(3)),
                             Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 2);
                     cancel();
                     return;
