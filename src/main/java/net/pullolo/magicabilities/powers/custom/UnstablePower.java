@@ -154,6 +154,9 @@ public class UnstablePower extends WarpPower implements IdlePower {
         if (item.equals(Material.GOLDEN_APPLE)){
             heal(p);
         }
+        if (item.equals(Material.ENCHANTED_GOLDEN_APPLE)){
+            for (int i =0; i<10;i++) heal(p);
+        }
     }
 
     private void onDeath(DeathExecute execute){
