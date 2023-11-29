@@ -5,5 +5,6 @@ public enum PowerType {
     WARP,
     SUPERIOR_WARP,
     LIGHTNING,
+    UNSTABLE,
     NONE
 }

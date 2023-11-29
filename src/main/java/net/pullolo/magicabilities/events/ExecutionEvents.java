@@ -8,7 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -84,5 +87,36 @@ public class ExecutionEvents implements Listener {
             return;
         }
         players.get(p).getPower().executePower(new DamagedExecute(event, p));
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event){
+        Player p = event.getEntity();
+        if (!players.containsKey(p)){
+            return;
+        }
+        players.get(p).getPower().executePower(new DeathExecute(event, p));
+    }
+
+    @EventHandler
+    public void onEat(PlayerItemConsumeEvent event){
+        Player p = event.getPlayer();
+        if (!players.containsKey(p)){
+            return;
+        }
+        players.get(p).getPower().executePower(new ConsumeExecute(event, p));
+    }
+
+    @EventHandler
+    public void onEnClick(PlayerInteractEntityEvent event){
+        if (!(event.getRightClicked() instanceof Player)){
+            return;
+        }
+        Player p = event.getPlayer();
+        Player target = (Player) event.getRightClicked();
+        if (!players.containsKey(target)){
+            return;
+        }
+        players.get(p).getPower().executePower(new InteractedOnByExecute(event, target));
     }
 }

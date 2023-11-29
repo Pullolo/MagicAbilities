@@ -20,7 +20,7 @@ import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class WarpPower extends Power {
-    private Location dest;
+    protected Location dest;
     public WarpPower(Player owner) {
         super(owner);
         dest = Bukkit.getWorlds().get(0).getSpawnLocation();
@@ -45,17 +45,17 @@ public class WarpPower extends Power {
                 Location pl = p.getLocation().clone().add(0, 1, 0).add(p.getLocation().getDirection().clone().normalize().multiply(2));
                 ArrayList<Entity> tpEd = new ArrayList<>();
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
-                openRift(pl, getDest().clone().add(0, 1, 0), tpEd);
-                openRift(getDest().clone().add(0, 1, 0), pl, tpEd);
+                openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
+                openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
                 CooldownApi.addCooldown("WARP-DEF", p, 180);
                 return;
         }
     }
 
-    private void openRift(Location l ,Location dest, ArrayList<Entity> tped){
+    protected void openRift(Location l ,Location dest, ArrayList<Entity> tped, int time){
         new BukkitRunnable() {
             int i = 0;
-            final int timeOpen = 15;
+            final int timeOpen = time;
             @Override
             public void run() {
 
@@ -98,7 +98,7 @@ public class WarpPower extends Power {
         }
     }
 
-    private void notifyPlayers(Player player ,Location l, Location dest) {
+    protected void notifyPlayers(Player player ,Location l, Location dest) {
         if (this instanceof SuperiorWarpPower) return;
         Random r = new Random();
         for (Player p : Bukkit.getOnlinePlayers()){

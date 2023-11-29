@@ -1,9 +1,6 @@
 package net.pullolo.magicabilities.powers;
 
-import net.pullolo.magicabilities.powers.custom.IcePower;
-import net.pullolo.magicabilities.powers.custom.LightningPower;
-import net.pullolo.magicabilities.powers.custom.SuperiorWarpPower;
-import net.pullolo.magicabilities.powers.custom.WarpPower;
+import net.pullolo.magicabilities.powers.custom.*;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import org.bukkit.entity.Player;
 
@@ -30,6 +27,8 @@ public abstract class Power {
                 return new SuperiorWarpPower(p);
             case LIGHTNING:
                 return new LightningPower(p);
+            case UNSTABLE:
+                return new UnstablePower(p);
             default:
                 return new Power(p) {
                     @Override
