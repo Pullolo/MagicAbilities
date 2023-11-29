@@ -109,11 +109,10 @@ public class ExecutionEvents implements Listener {
         if (!(event.getRightClicked() instanceof Player)){
             return;
         }
-        Player p = event.getPlayer();
         Player target = (Player) event.getRightClicked();
         if (!players.containsKey(target)){
             return;
         }
-        players.get(p).getPower().executePower(new InteractedOnByExecute(event, target));
+        players.get(target).getPower().executePower(new InteractedOnByExecute(event, target));
     }
 }

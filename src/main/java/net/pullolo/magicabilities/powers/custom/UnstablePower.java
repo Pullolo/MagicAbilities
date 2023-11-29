@@ -90,6 +90,8 @@ public class UnstablePower extends WarpPower implements IdlePower {
         Player p = execute.getPlayer();
         EntityDamageEvent event = (EntityDamageEvent) execute.getRawEvent();
         if (random.nextBoolean()) glitch(p, 10, 3);
+        if (random.nextInt(50)==0) switchDim(p);
+        if (random.nextInt(50)==0) p.setFireTicks(60);
         if (event.getFinalDamage()>p.getHealth() && random.nextInt(5)==0){
             event.setCancelled(true);
             p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 1, 1);
@@ -102,10 +104,8 @@ public class UnstablePower extends WarpPower implements IdlePower {
     private void onInteracted(InteractedOnByExecute ex) {
         Player p = ex.getPlayer();
         if (CooldownApi.isOnCooldown("UNS-H1", p)) return;
-        Player clicker = ((PlayerInteractEntityEvent) ex.getRawEvent()).getPlayer();
         if (random.nextInt(100)==0){
             heal(p);
-            clicker.setVelocity(p.getLocation().toVector().subtract(p.getLocation().toVector()).normalize().multiply(-1.4).add(new Vector(0, 2, 0)));
             CooldownApi.addCooldown("UNS-H1", p, 300);
         } else if (random.nextInt(38)==0){
             explode(p);
@@ -225,14 +225,14 @@ public class UnstablePower extends WarpPower implements IdlePower {
             @Override
             public void run() {
                 if (unstable>0){
-                    if (random.nextInt(31/(unstable+1))==0){
+                    if (random.nextInt(Math.min(1031-unstable*100, 2))==0){
                         glitch(p, 5, 4);
                     }
                 }
-                if (random.nextInt(200/(unstable+1))==0){
+                if (random.nextInt(Math.min(200/(unstable+1),20))==0){
                     switchDim(p);
                 }
-                if (random.nextInt(400/(unstable+1))==0){
+                if (random.nextInt(Math.min(400/(unstable+1),20))==0){
                     p.getWorld().spawn(p.getLocation(), LightningStrike.class);
                 }
 
