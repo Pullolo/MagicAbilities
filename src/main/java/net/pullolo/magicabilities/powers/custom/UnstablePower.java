@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
-import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
@@ -167,9 +166,11 @@ public class UnstablePower extends WarpPower implements IdlePower {
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2);
             event.setKeepInventory(false);
             event.setKeepLevel(false);
+
         } else {
             event.setKeepInventory(true);
             event.setKeepLevel(true);
+            event.getDrops().clear();
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()-2);
             unstable++;
         }
@@ -224,15 +225,17 @@ public class UnstablePower extends WarpPower implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
+                if (unstable<0) unstable = 0;
                 if (unstable>0){
-                    if (random.nextInt(Math.min(1031-unstable*100, 2))==0){
+                    debugLog(String.valueOf(10-unstable), true);
+                    if (random.nextInt(10-unstable)==0){
                         glitch(p, 5, 4);
                     }
                 }
-                if (random.nextInt(Math.min(200/(unstable+1),20))==0){
+                if (random.nextInt(100-(unstable))==0){
                     switchDim(p);
                 }
-                if (random.nextInt(Math.min(400/(unstable+1),20))==0){
+                if (random.nextInt(120-(unstable))==0){
                     p.getWorld().spawn(p.getLocation(), LightningStrike.class);
                 }
 
