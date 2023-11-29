@@ -44,9 +44,6 @@ public class ExecutionEvents implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event){
         Player p = event.getPlayer();
-        if (!(p.isOnGround() && !p.isSwimming())){
-            return;
-        }
         if (!players.containsKey(p)){
             return;
         }

@@ -154,6 +154,9 @@ public class IcePower extends Power implements IdlePower {
         if (!p.equals(getOwner())){
             throw new RuntimeException("Event player does not match the power owner!");
         }
+        if (!(p.isOnGround() && !p.isSwimming())){
+            return;
+        }
         setColdBlock(event.getTo(), p);
     }
 
