@@ -47,7 +47,11 @@ public class WarpPower extends Power {
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
-                CooldownApi.addCooldown("WARP-DEF", p, 180);
+                if ((this instanceof SuperiorWarpPower)) {
+                    CooldownApi.addCooldown("WARP-DEF", p, 120);
+                } else {
+                    CooldownApi.addCooldown("WARP-DEF", p, 180);
+                }
                 return;
         }
     }

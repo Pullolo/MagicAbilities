@@ -76,12 +76,12 @@ public class UnstablePower extends WarpPower implements IdlePower {
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
-                CooldownApi.addCooldown("WARP-DEF", p, 180);
+                CooldownApi.addCooldown("WARP-DEF", p, 360);
                 return;
             case 1:
                 if (CooldownApi.isOnCooldown("WARP-DEF", p)) return;
                 switchDim(p);
-                CooldownApi.addCooldown("WARP-DEF", p, 180);
+                CooldownApi.addCooldown("WARP-DEF", p, 360);
                 return;
         }
     }
