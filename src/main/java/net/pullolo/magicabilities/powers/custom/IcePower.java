@@ -22,6 +22,7 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.MagicAbilities.*;
+import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class IcePower extends Power implements IdlePower {
@@ -122,12 +123,63 @@ public class IcePower extends Power implements IdlePower {
                 }
                 CooldownApi.addCooldown("ICE-4", p, 3);
                 return;
+            case 5:
+                if (CooldownApi.isOnCooldown("ICE-5", p)) return;
+                iceSlash(ex);
+                CooldownApi.addCooldown("ICE-5", p, 12);
+                return;
             case 8:
                 if (CooldownApi.isOnCooldown("ICE-8", p)) return;
                 phaseChange(ex);
                 CooldownApi.addCooldown("ICE-8", p, 5);
                 return;
 
+        }
+    }
+
+    private void iceSlash(LeftClickExecute execute){
+        final Player p = execute.getPlayer();
+        final ArrayList<Entity> hit = new ArrayList<>();
+        final Location start = p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(2));
+        for (int i = 0 ; i< 6; i++){
+            final int j = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location l = p.getLocation().clone().add(0, 4-(j*0.6), 0).add(p.getLocation().getDirection().clone().normalize().multiply(j*2));
+                    createIceLine(p, start, l, hit);
+                }
+            }.runTaskLater(magicPlugin, 2*i);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location l = p.getLocation().clone().add(0, 4-(j*0.6), 0).add(rotateVector(p.getLocation().getDirection().clone().normalize().multiply(j*2), 9));
+                    createIceLine(p, start, l, hit);
+                }
+            }.runTaskLater(magicPlugin, 2*i);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location l = p.getLocation().clone().add(0, 4-(j*0.6), 0).add(rotateVector(p.getLocation().getDirection().clone().normalize().multiply(j*2), -9));
+                    createIceLine(p, start, l, hit);
+                }
+            }.runTaskLater(magicPlugin, 2*i);
+        }
+    }
+
+    private void createIceLine(Player p, Location l1, Location l2, ArrayList<Entity> hit){
+        Color[] colors = new Color[3];
+        colors[0] = Color.fromRGB(92, 226, 250);
+        colors[1] = Color.fromRGB(214, 249, 255);
+        colors[2] = Color.fromRGB(2, 188, 250);
+        p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_SNOW_STEP, 1.3f, 1.1f);
+        for (Entity e: particleApi.drawColoredLine(l1, l2, 1, colors[new Random().nextInt(colors.length)], new Random().nextInt(2)+1, 0)){
+            if (!(e instanceof LivingEntity)) continue;
+            if (e.equals(p)) continue;
+            if (hit.contains(e)) continue;
+            ((Damageable) e).damage(calculateDamage(p, (LivingEntity) e, 1.6), p);
+            e.setFreezeTicks(e.getMaxFreezeTicks()*6);
+            spawnSpellHitParticles(e.getLocation().clone().add(0, 1,0));
         }
     }
 
@@ -254,7 +306,7 @@ public class IcePower extends Power implements IdlePower {
             en.setMarker(true);
         });
 
-        Location dest = p.getLocation().add(GeneralMethods.rotateVector(p.getLocation().getDirection(), vectorRotate).multiply(10));
+        Location dest = p.getLocation().add(rotateVector(p.getLocation().getDirection(), vectorRotate).multiply(10));
         Vector v = dest.subtract(p.getLocation()).toVector();
 
         double s = 1;
