@@ -21,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
@@ -37,6 +38,10 @@ public class ShogunPower extends Power implements IdlePower {
 
     @Override
     public void executePower(Execute ex) {
+        if (ex instanceof RightClickExecute){
+            executeRightClick((RightClickExecute) ex);
+            return;
+        }
         if (ex instanceof DamagedByExecute){
             block((DamagedByExecute) ex);
             return;
@@ -49,6 +54,41 @@ public class ShogunPower extends Power implements IdlePower {
             damagedExecute((DamagedExecute) ex);
             return;
         }
+    }
+
+    private void executeRightClick(RightClickExecute ex) {
+        final Player player = ex.getPlayer();
+        if (!player.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("sword")) return;
+        if(CooldownApi.isOnCooldown("SHOGUN-AB0", player)) return;
+        dash(player);
+        CooldownApi.addCooldown("SHOGUN-AB0", player, 12);
+    }
+
+    private void dash(Player p){
+        p.setVelocity(p.getLocation().getDirection().normalize().multiply(2).setY(0.3));
+        BukkitRunnable r = new BukkitRunnable() {
+            final ArrayList<Entity> alreadyDamaged = new ArrayList<>();
+            int i = 0;
+            @Override
+            public void run() {
+                i++;
+
+                for (Entity entity : p.getNearbyEntities(1, 1, 1)){
+                    if (!entity.equals(p) && !alreadyDamaged.contains(entity)){
+                        if (entity instanceof LivingEntity){
+                            ((LivingEntity) entity).damage(20, p);
+                            alreadyDamaged.add(entity);
+                        }
+                    }
+                }
+
+                if (i>14){
+                    cancel();
+                }
+            }
+        };
+        r.runTaskTimer(magicPlugin, 0, 1);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1F, 0.8F);
     }
 
     private void damagedExecute(DamagedExecute execute){
