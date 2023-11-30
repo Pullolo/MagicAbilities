@@ -31,6 +31,8 @@ public abstract class Power {
                 return new UnstablePower(p);
             case ALCOHOLIZM:
                 return new AlcoholizmPower(p);
+            case SHOGUN:
+                return new ShogunPower(p);
             default:
                 return new Power(p) {
                     @Override

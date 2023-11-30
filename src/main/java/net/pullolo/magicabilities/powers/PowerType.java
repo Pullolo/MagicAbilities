@@ -7,5 +7,6 @@ public enum PowerType {
     LIGHTNING,
     UNSTABLE,
     ALCOHOLIZM,
+    SHOGUN,
     NONE
 }

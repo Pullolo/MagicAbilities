@@ -2,6 +2,7 @@ package net.pullolo.magicabilities.events;
 
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,14 +11,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import static net.pullolo.magicabilities.MagicAbilities.debugLog;
-import static net.pullolo.magicabilities.MagicAbilities.getLog;
+import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class ExecutionEvents implements Listener {
@@ -124,5 +122,17 @@ public class ExecutionEvents implements Listener {
             return;
         }
         players.get(p).getPower().executePower(new MineExecute(event, p));
+    }
+
+    @EventHandler
+    public void onShift(PlayerToggleSneakEvent event){
+        if (!event.isSneaking()){
+            return;
+        }
+        Player p = event.getPlayer();
+        if (!players.containsKey(p)){
+            return;
+        }
+        players.get(p).getPower().executePower(new SneakExecute(event, p));
     }
 }
