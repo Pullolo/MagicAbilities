@@ -8,5 +8,6 @@ public enum PowerType {
     UNSTABLE,
     ALCOHOLIZM,
     SHOGUN,
+    POTATO,
     NONE
 }

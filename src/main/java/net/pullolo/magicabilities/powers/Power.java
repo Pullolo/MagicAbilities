@@ -33,6 +33,8 @@ public abstract class Power {
                 return new AlcoholizmPower(p);
             case SHOGUN:
                 return new ShogunPower(p);
+            case POTATO:
+                return new PotatoPower(p);
             default:
                 return new Power(p) {
                     @Override
