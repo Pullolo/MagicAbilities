@@ -16,7 +16,7 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
 <ul>
   <li>💛 - Ice ❄️ </li>
   <li>💛 - Warp (Teleportation) ⭐</li>
-  <li>💛 - Superior Warp (Like warp but with additional perks) ✨/li>
+  <li>💛 - Superior Warp (Like warp but with additional perks) ✨</li>
   <li>❤️ - Unstable Power (Switching diemnsions, Glitchinng, Random effects) 🧭</li>
   <li>💚 - Lightning Power ⚡</li>
   <li>💛 - Shogun Power (Dashing, Sword blocking) ⚔️</li>
