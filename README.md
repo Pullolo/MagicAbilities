@@ -30,6 +30,9 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
 
 ![](https://i.imgur.com/QlSqjAX.png)
 
+> [!TIP]
+> The ```/binds``` command may be usefull for figuring some things out.
+
 > [!WARNING]
 > The plugin is still in the development process, anything is subject to change.
 
