@@ -75,9 +75,11 @@ public class PotatoPower extends Power {
     private void executeRightClick(RightClickExecute execute){
         final Player p = execute.getPlayer();
         if (!(p.getInventory().getItemInMainHand().getType().equals(Material.POTATO))) return;
+        if (CooldownApi.isOnCooldown("POTATO-1", p)) return;
         ((PlayerInteractEvent) execute.getRawEvent()).setCancelled(true);
         p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-1);
         throwPotato(p);
+        CooldownApi.addCooldown("POTATO-1", p, 0.5);
     }
 
     private void throwPotato(Player p){
