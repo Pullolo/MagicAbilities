@@ -15,12 +15,13 @@ public class PowerPlayer {
     public static final HashMap<Player, PowerPlayer> players = new HashMap<>();
 
     private Power power;
-    private int activeSlot = 0;
+    private int activeSlot;
     private BukkitRunnable idlePower = null;
     private final HashMap<Integer, Integer> binds;
 
     public PowerPlayer(Power power, HashMap<Integer, Integer> binds) {
         this.power = power;
+        this.activeSlot=this.power.getOwner().getInventory().getHeldItemSlot();
         this.binds = binds;
         if (players.containsKey(power.getOwner())){
             throw new RuntimeException("Power players Hashmap already has this Player!");
