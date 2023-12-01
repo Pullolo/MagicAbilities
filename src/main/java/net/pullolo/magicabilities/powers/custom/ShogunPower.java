@@ -33,7 +33,6 @@ import static net.pullolo.magicabilities.players.PowerPlayer.players;
 public class ShogunPower extends Power implements IdlePower {
     public ShogunPower(Player owner) {
         super(owner);
-        owner.setAllowFlight(true);
     }
 
     @Override
