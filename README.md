@@ -4,7 +4,7 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
 > [!NOTE]
 > Not all powers are equal, some are more op then the others.
 
-#### Impact Legend
+#### Impact References
 
   - *Small Impact 💚* </li>
   - *Medium Impact (Could be a bit annoying or Op) 💛*
