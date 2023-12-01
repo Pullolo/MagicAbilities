@@ -1,8 +1,8 @@
 # MagicAbilities - Minecraft Plugin
-This plugin adds a variety of amazing super powers, through just the Spigot Api.
+This plugin adds a variety of amazing superpowers, through just the Spigot Api.
 
 > [!NOTE]
-> Not all powers are equal, some are more op then the others.
+> Not all powers are equal, some are more op than the others.
 
 #### Impact References
 
@@ -11,7 +11,7 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
   - *Large Impact (Will change the way you need to play) ❤️*
 
 
-#### Current list of Powers an their impact on gameplay 
+#### Current list of Powers and their impact on gameplay 
 
 <ul>
   <li>💛 - Ice ❄️ </li>
@@ -21,7 +21,7 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
   <li>💚 - Lightning Power ⚡</li>
   <li>💛 - Shogun Power (Dashing, Sword blocking) ⚔️</li>
   <li>❤️ - Alchoholizm (Added for fun, Potions, etc.) 🥃</li>
-  <li>💛 - Potato Power (Added for fun, Some new features to potatos) 🥔</li>
+  <li>💛 - Potato Power (Added for fun, Some new features to potatoes) 🥔</li>
 </ul>
 
 > [!IMPORTANT]
@@ -31,10 +31,10 @@ This plugin adds a variety of amazing super powers, through just the Spigot Api.
 ![](https://i.imgur.com/QlSqjAX.png)
 
 > [!TIP]
-> The ```/binds``` command may be usefull for figuring some things out.
+> The ```/binds``` command may be useful for figuring some things out.
 
 > [!WARNING]
 > The plugin is still in the development process, anything is subject to change.
 
 > [!WARNING]
-> The plugin doesn't have a wiki page so it might be difficult to figure some things out.
+> The plugin doesn't have a wiki page, so it might be difficult to figure some things out.
