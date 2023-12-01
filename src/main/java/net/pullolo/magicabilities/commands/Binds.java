@@ -30,7 +30,7 @@ public class Binds implements CommandExecutor, TabCompleter {
             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7---------------------------"));
             for (int i = 0; i < 9; i++){
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        "&7Slot - &c" + i + "&7: ability - &a"+ players.get(p).getBinds().get(i)));
+                        "&7Slot - &c" + i + "&7: ability - " + players.get(p).getPower().getAbilityName(players.get(p).getBinds().get(i)) + " &7- &a"+ players.get(p).getBinds().get(i)));
             }
             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7---------------------------"));
             return true;

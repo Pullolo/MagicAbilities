@@ -128,4 +128,14 @@ public class WarpPower extends Power {
     public void setDest(Location dest) {
         this.dest = dest;
     }
+
+    @Override
+    public String getAbilityName(int ability){
+        switch (ability){
+            case 0:
+                return "&dRift";
+            default:
+                return "&7none";
+        }
+    }
 }

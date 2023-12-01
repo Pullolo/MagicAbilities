@@ -42,4 +42,8 @@ public abstract class Power {
                 };
         }
     }
+
+    public String getAbilityName(int ability) {
+        return "&7none";
+    }
 }

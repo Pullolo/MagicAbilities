@@ -529,4 +529,26 @@ public class IcePower extends Power implements IdlePower {
         r.runTaskTimer(magicPlugin, 0, 15);
         return r;
     }
+
+    @Override
+    public String getAbilityName(int ability) {
+        switch (ability){
+            case 0:
+                return "&bIce Bolt";
+            case 1:
+                return "&bIce Machine Gun";
+            case 2:
+                return "&bIce Spikes";
+            case 3:
+                return "&bIce Star";
+            case 4:
+                return "&bMulti Ice Bolt";
+            case 5:
+                return "&bIce Slashes";
+            case 8:
+                return "&bPhase Change";
+            default:
+                return "&7none";
+        }
+    }
 }

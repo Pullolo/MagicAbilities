@@ -241,4 +241,16 @@ public class UnstablePower extends WarpPower implements IdlePower {
         r.runTaskTimer(magicPlugin, 0, 40);
         return r;
     }
+
+    @Override
+    public String getAbilityName(int ability) {
+        switch (ability){
+            case 0:
+                return "&dRift";
+            case 1:
+                return "&dSwitch Dimension";
+            default:
+                return "&7none";
+        }
+    }
 }

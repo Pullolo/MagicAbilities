@@ -143,4 +143,14 @@ public class ShogunPower extends Power implements IdlePower {
         r.runTaskTimer(magicPlugin, 0, 15);
         return r;
     }
+
+    @Override
+    public String getAbilityName(int ability){
+        switch (ability){
+            case 0:
+                return "&cDouble Jump";
+            default:
+                return "&7none";
+        }
+    }
 }

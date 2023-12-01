@@ -141,4 +141,16 @@ public class LightningPower extends Power implements IdlePower {
         r.runTaskTimer(magicPlugin, 0, 20);
         return r;
     }
+
+    @Override
+    public String getAbilityName(int ability){
+        switch (ability){
+            case 0:
+                return "&3Lightning Strike";
+            case 1:
+                return "&3Lightning Shot";
+            default:
+                return "&7none";
+        }
+    }
 }
