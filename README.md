@@ -5,30 +5,28 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
 > Not all powers are equal, some are more op than the others.
 
 #### Impact References
-
   - *Small Impact 💚* </li>
   - *Medium Impact (Could be a bit annoying or Op) 💛*
   - *Large Impact (Will change the way you need to play) ❤️*
 
 
-#### Current list of Powers and their impact on gameplay 
+### Current list of Powers and their impact on gameplay
+  - 💛 - Ice ❄️ 
+  - 💛 - Warp (Teleportation) ⭐
+  - 💛 - Superior Warp (Like warp but with additional perks) ✨
+  - ❤️ - Unstable Power (Switching dimensions, Glitching, Random effects) 🧭
+  - 💚 - Lightning Power ⚡
+  - 💛 - Shogun Power (Dashing, Sword blocking) ⚔️
+  - ❤️ - Alchoholizm (Added for fun, Potions, etc.) 🥃
+  - 💛 - Potato Power (Added for fun, Some new features to potatoes) 🥔
 
-<ul>
-  <li>💛 - Ice ❄️ </li>
-  <li>💛 - Warp (Teleportation) ⭐</li>
-  <li>💛 - Superior Warp (Like warp but with additional perks) ✨</li>
-  <li>❤️ - Unstable Power (Switching dimensions, Glitching, Random effects) 🧭</li>
-  <li>💚 - Lightning Power ⚡</li>
-  <li>💛 - Shogun Power (Dashing, Sword blocking) ⚔️</li>
-  <li>❤️ - Alchoholizm (Added for fun, Potions, etc.) 🥃</li>
-  <li>💛 - Potato Power (Added for fun, Some new features to potatoes) 🥔</li>
-</ul>
 
 > [!IMPORTANT]
 > To add powers to players do
 > ```/setpower <player> <power_type>```
 
 ![](https://i.imgur.com/QlSqjAX.png)
+![](https://i.imgur.com/SfTBcXA.png)
 
 > [!TIP]
 > The ```/binds``` command may be useful for figuring some things out.
