@@ -12,6 +12,7 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
 
 ### Current list of Powers and their impact on gameplay
   - 💛 - Ice ❄️ 
+  - 💛 - Fire 🔥
   - 💛 - Warp (Teleportation) ⭐
   - 💛 - Superior Warp (Like warp but with additional perks) ✨
   - ❤️ - Unstable Power (Switching dimensions, Glitching, Random effects) 🧭
