@@ -253,9 +253,10 @@ public class IcePower extends Power implements IdlePower {
 
                 if (r.nextBoolean()) particleApi.spawnParticles(ground.clone().add(0, 1, 0), Particle.SNOWFLAKE, r.nextInt(10)+1, 0.1, 0.1, 0.1, 0.01);
                 as.teleport(as.getLocation().add(v.normalize().multiply(speed)));
-                old.put(ground.clone().getBlock(), ground.clone().getBlock().getType());
-                ground.clone().getBlock().setType(Material.ICE);
-
+                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.ICE)) {
+                    old.put(ground.clone().getBlock(), ground.clone().getBlock().getType());
+                    ground.clone().getBlock().setType(Material.ICE);
+                }
 
                 if (i > distance){
                     if (!as.isDead()){
