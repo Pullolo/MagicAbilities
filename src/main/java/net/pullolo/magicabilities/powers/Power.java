@@ -35,6 +35,8 @@ public abstract class Power {
                 return new ShogunPower(p);
             case POTATO:
                 return new PotatoPower(p);
+            case FIRE:
+                return new FirePower(p);
             default:
                 return new Power(p) {
                     @Override

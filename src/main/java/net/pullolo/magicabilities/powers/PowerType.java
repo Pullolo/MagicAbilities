@@ -9,5 +9,6 @@ public enum PowerType {
     ALCOHOLIZM,
     SHOGUN,
     POTATO,
+    FIRE,
     NONE
 }
