@@ -123,8 +123,8 @@ public class FirePower extends Power implements IdlePower {
                                 }
                                 if (!entity.equals(p)){
                                     if (entity instanceof LivingEntity){
-                                        ((LivingEntity) entity).damage(6, p);
                                         entity.setFireTicks(80);
+                                        ((LivingEntity) entity).damage(6, p);
                                     }
                                 }
                             }
@@ -185,8 +185,8 @@ public class FirePower extends Power implements IdlePower {
                         if (as.getLocation().distanceSquared(entity.getLocation()) <= 3.8){
                             if (!entity.equals(p)){
                                 if (entity instanceof LivingEntity){
-                                    ((LivingEntity) entity).damage(12*initM, p);
                                     entity.setFireTicks(80);
+                                    ((LivingEntity) entity).damage(12*initM, p);
                                     as.getWorld().playSound(as.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1, 1.3f);
                                     as.remove();
                                     cancel();
