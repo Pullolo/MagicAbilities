@@ -9,10 +9,12 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -253,7 +255,7 @@ public class IcePower extends Power implements IdlePower {
 
                 if (r.nextBoolean()) particleApi.spawnParticles(ground.clone().add(0, 1, 0), Particle.SNOWFLAKE, r.nextInt(10)+1, 0.1, 0.1, 0.1, 0.01);
                 as.teleport(as.getLocation().add(v.normalize().multiply(speed)));
-                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.ICE)) {
+                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.ICE) && !(ground.clone().getBlock().getState() instanceof InventoryHolder)) {
                     old.put(ground.clone().getBlock(), ground.clone().getBlock().getType());
                     ground.clone().getBlock().setType(Material.ICE);
                 }
