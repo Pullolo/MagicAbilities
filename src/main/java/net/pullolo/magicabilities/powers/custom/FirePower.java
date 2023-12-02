@@ -7,6 +7,7 @@ import net.pullolo.magicabilities.powers.executions.Execute;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
@@ -45,26 +47,101 @@ public class FirePower extends Power implements IdlePower {
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
                 if (CooldownApi.isOnCooldown("FIRE-0", p)) return;
+                p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
                 fireBlast(execute, 1, 0);
                 CooldownApi.addCooldown("FIRE-0", p, 2);
                 return;
             case 1:
                 if (CooldownApi.isOnCooldown("FIRE-1", p)) return;
+                p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
                 int rotation = -20;
-                for (int i = 1; i<5; i++){
+                for (int i = 0; i<5; i++){
                     fireBlast(execute, 0.8, rotation);
                     rotation+=10;
                 }
                 CooldownApi.addCooldown("FIRE-1", p, 2);
+                return;
+            case 2:
+                if (CooldownApi.isOnCooldown("FIRE-2", p)) return;
+                p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
+                fireSurge(execute);
+                CooldownApi.addCooldown("FIRE-2", p, 6);
                 return;
             default:
                 return;
         }
     }
 
+    private void fireSurge(LeftClickExecute execute){
+        Player p = execute.getPlayer();
+        ArmorStand as = p.getWorld().spawn(p.getLocation().add(0, 1.5, 0), ArmorStand.class, en -> {
+            en.setVisible(false);
+            en.setGravity(false);
+            en.setSmall(true);
+            en.setMarker(true);
+        });
+
+        Location dest = p.getLocation().add(p.getLocation().getDirection().multiply(10));
+        Vector v = dest.subtract(p.getLocation()).toVector();
+
+        double s = 1;
+        int d = 10;
+
+        new BukkitRunnable(){
+            final Random r = new Random();
+            final int distance = d;
+            final double speed = s;
+            int i = 1;
+            final HashMap<Block, Material> old = new HashMap<>();
+
+            @Override
+            public void run() {
+                if (p == null){
+                    as.remove();
+                    cancel();
+                }
+
+                Location ground = as.getLocation().clone();
+                while (ground.getBlock().isPassable() && !ground.getBlock().isLiquid() && ground.getY()>0){
+                    ground.add(0, -1, 0);
+                }
+                ground.add(0, 1, 0);
+
+                if (r.nextBoolean()) particleApi.spawnParticles(ground.clone().add(0, 1, 0), Particle.FLAME, r.nextInt(10)+1, 0.1, 0.1, 0.1, 0.01);
+                as.teleport(as.getLocation().add(v.normalize().multiply(speed)));
+                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.FIRE) && (ground.clone().getBlock().getType().equals(Material.AIR) || ground.clone().getBlock().getType().equals(Material.GRASS))) {
+                    old.put(ground.clone().getBlock(), ground.clone().getBlock().getType());
+                    ground.clone().getBlock().setType(Material.FIRE);
+                }
+
+                if (i > distance){
+                    if (!as.isDead()){
+                        for (Entity entity : ground.clone().getWorld().getNearbyEntities(ground.clone(),2.4, 3, 2.4)){
+                            if (!as.isDead()){
+                                if (entity instanceof ArmorStand){
+                                    continue;
+                                }
+                                if (!entity.equals(p)){
+                                    if (entity instanceof LivingEntity){
+                                        ((LivingEntity) entity).damage(6, p);
+                                        entity.setFireTicks(80);
+                                    }
+                                }
+                            }
+                        }
+                        particleApi.spawnParticles(ground.clone(), Particle.FLAME, 100, 1, 1, 1, 0.1);
+                        restoreBlocks(old);
+                        as.remove();
+                        cancel();
+                    }
+                }
+                i++;
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
+    }
+
     private void fireBlast(LeftClickExecute execute, double initM, int vectorRotate){
         Player p = execute.getPlayer();
-        p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
         ArmorStand as = p.getWorld().spawn(p.getLocation().add(0, 1.5, 0), ArmorStand.class, en -> {
             en.setVisible(false);
             en.setGravity(false);
@@ -125,7 +202,11 @@ public class FirePower extends Power implements IdlePower {
                         as.getLocation().clone().add(0, 1, 0).getBlock().setType(Material.FIRE);
                     }
                     if (!as.isDead()){
-                        as.getWorld().playSound(as.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1, 1.3f);
+                        if (l) {
+                            as.getWorld().playSound(as.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 0.7f, 1.3f);
+                        } else {
+                            as.getWorld().playSound(as.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 0.7f, 1.3f);
+                        }
                         as.remove();
                         cancel();
                     }
@@ -140,6 +221,19 @@ public class FirePower extends Power implements IdlePower {
                 i++;
             }
         }.runTaskTimer(magicPlugin, 0, 1);
+    }
+
+    private void restoreBlocks(HashMap<Block, Material> blocks){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (blocks.isEmpty()) return;
+                for (Block b : blocks.keySet()){
+                    b.setType(blocks.get(b));
+                }
+                blocks.clear();
+            }
+        }.runTaskLater(magicPlugin, 20);
     }
 
     @Override
@@ -162,6 +256,10 @@ public class FirePower extends Power implements IdlePower {
         switch (ability){
             case 0:
                 return "&cFire Blast";
+            case 1:
+                return "&cFire Barrage";
+            case 2:
+                return "&cFire Surge";
             default:
                 return "&7none";
         }

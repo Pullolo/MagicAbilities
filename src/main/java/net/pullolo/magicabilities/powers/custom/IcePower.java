@@ -119,7 +119,7 @@ public class IcePower extends Power implements IdlePower {
             case 4:
                 if (CooldownApi.isOnCooldown("ICE-4", p)) return;
                 int rotation = -20;
-                for (int i = 1; i<5; i++){
+                for (int i = 0; i<5; i++){
                     shootIce(ex, 0.8, rotation);
                     rotation+=10;
                 }
