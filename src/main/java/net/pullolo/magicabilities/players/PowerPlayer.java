@@ -3,6 +3,7 @@ package net.pullolo.magicabilities.players;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.PowerType;
+import net.pullolo.magicabilities.powers.custom.WitcherPower;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,6 +49,7 @@ public class PowerPlayer {
     }
 
     public void remove(){
+        if (power instanceof WitcherPower) ((WitcherPower) power).remove();
         if (idlePower!=null) idlePower.cancel();
         idlePower=null;
     }

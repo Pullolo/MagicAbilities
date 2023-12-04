@@ -182,6 +182,14 @@ public class WitcherPower extends Power implements IdlePower {
         return vector.setX(x).setZ(z);
     }
 
+    public void remove(){
+        if (quenParticles!=null){
+            quenParticles.cancel();
+            quenParticles=null;
+        }
+        shield=false;
+    }
+
     @Override
     public BukkitRunnable executeIdle(IdleExecute ex) {
         final Player p = ex.getPlayer();
@@ -201,9 +209,9 @@ public class WitcherPower extends Power implements IdlePower {
             case 0:
                 return "&cIgni";
             case 1:
-                return "&9Aard";
+                return "&bAard";
             case 2:
-                return "&6Quen";
+                return "&eQuen";
             case 3:
                 return "&aAksji";
             case 4:
