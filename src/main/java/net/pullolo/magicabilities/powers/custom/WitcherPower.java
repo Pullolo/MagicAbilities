@@ -191,7 +191,7 @@ public class WitcherPower extends Power implements IdlePower {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 0));
             }
         };
-        r.runTaskTimer(magicPlugin, 0, 15);
+        r.runTaskTimer(magicPlugin, 0, 40);
         return r;
     }
 
