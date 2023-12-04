@@ -10,5 +10,6 @@ public enum PowerType {
     SHOGUN,
     POTATO,
     FIRE,
+    WITCHER,
     NONE
 }

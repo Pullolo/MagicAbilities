@@ -37,6 +37,8 @@ public abstract class Power {
                 return new PotatoPower(p);
             case FIRE:
                 return new FirePower(p);
+            case WITCHER:
+                return new WitcherPower(p);
             default:
                 return new Power(p) {
                     @Override

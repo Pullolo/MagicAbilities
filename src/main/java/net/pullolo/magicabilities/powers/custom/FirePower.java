@@ -264,5 +264,4 @@ public class FirePower extends Power implements IdlePower {
                 return "&7none";
         }
     }
-
 }
