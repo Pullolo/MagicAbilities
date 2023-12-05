@@ -83,7 +83,7 @@ public class WitcherPower extends Power implements IdlePower {
             case 4:
                 if(CooldownApi.isOnCooldown("WITCHER-4",p)) return;
                 yrden(p);
-                CooldownApi.addCooldown("WITCHER-4", p, 12);
+                CooldownApi.addCooldown("WITCHER-4", p, 18);
                 return;
             default:
                 return;
@@ -91,7 +91,50 @@ public class WitcherPower extends Power implements IdlePower {
     }
 
     private void yrden(Player p) {
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1, 0.5f);
+        Color c = Color.fromRGB(191,85,236);
+        Location l = p.getLocation().clone().add(p.getLocation().getDirection().clone().setY(0).normalize().multiply(2));
+        final Vector step = l.getDirection().clone().setY(0).normalize().multiply(4);
+        new BukkitRunnable() {
+            ArrayList<LivingEntity> modified = new ArrayList<>();
+            int i = 0;
+            @Override
+            public void run() {
+                i++;
 
+                for (int j = 0; j<90; j++){
+                    Location loc = l.clone().add(rotateVector(step.clone(), j*4));
+                    while (loc.clone().add(0, -1, 0).getBlock().isPassable() && loc.getY()>-70){
+                        loc.add(0, -1, 0);
+                    }
+                    if (j%5==0){
+                        for (int k = 0; k<5; k++){
+                            Vector toCenter = loc.clone().add(0, (double) k/6, 0).toVector().subtract(l.clone().toVector()).normalize().multiply(-1);
+                            particleApi.spawnColoredParticles(loc.clone().add(0, (double) k/6, 0).add(toCenter.multiply((double) k/10)), c, 1, 1, 0.01, 0.01, 0.01);
+                        }
+                    }
+                    particleApi.spawnColoredParticles(loc.clone(), c, 1, 1, 0.01, 0.01, 0.01);
+                }
+                for (Entity e : l.getWorld().getNearbyEntities(l.clone(), 3.5, 4, 3.5)){
+                    if (!(e instanceof LivingEntity)) continue;
+                    if (e instanceof Player) continue;
+                    ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 5, 0));
+                    if (((LivingEntity) e).hasAI()){
+                        ((LivingEntity) e).setAI(false);
+                        modified.add((LivingEntity) e);
+                    }
+                }
+                if (i>160){
+                    for (LivingEntity e : modified){
+                        if (!(!e.isDead() && e.isValid())) continue;
+                        e.setAI(true);
+                    }
+                    modified.clear();
+                    cancel();
+                    return;
+                }
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
     }
 
     private void damagedExecute(DamagedExecute execute){
