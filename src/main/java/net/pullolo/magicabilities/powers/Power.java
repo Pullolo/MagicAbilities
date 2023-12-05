@@ -39,6 +39,8 @@ public abstract class Power {
                 return new FirePower(p);
             case WITCHER:
                 return new WitcherPower(p);
+            case NATURE:
+                return new NaturePower(p);
             default:
                 return new Power(p) {
                     @Override

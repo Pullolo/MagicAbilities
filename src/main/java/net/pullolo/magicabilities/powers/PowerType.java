@@ -11,5 +11,6 @@ public enum PowerType {
     POTATO,
     FIRE,
     WITCHER,
+    NATURE,
     NONE
 }

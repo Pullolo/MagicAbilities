@@ -21,6 +21,7 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
   - ❤️ - Alchoholizm (Added for fun, Potions, etc.) 🥃
   - 💛 - Potato Power (Added for fun, Some new features to potatoes) 🥔
   - 💛 - The Witcher 🐺
+  - 💛 - Nature 🌳
 
 
 > [!IMPORTANT]
