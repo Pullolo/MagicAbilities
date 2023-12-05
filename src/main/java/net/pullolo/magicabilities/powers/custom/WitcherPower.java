@@ -3,18 +3,17 @@ package net.pullolo.magicabilities.powers.custom;
 import net.pullolo.magicabilities.misc.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
-import net.pullolo.magicabilities.powers.executions.DamagedExecute;
-import net.pullolo.magicabilities.powers.executions.Execute;
-import net.pullolo.magicabilities.powers.executions.IdleExecute;
-import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
+import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,10 +21,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
+import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class WitcherPower extends Power implements IdlePower {
@@ -41,6 +42,10 @@ public class WitcherPower extends Power implements IdlePower {
     public void executePower(Execute ex) {
         if (ex instanceof LeftClickExecute){
             executeLeftClick((LeftClickExecute) ex);
+            return;
+        }
+        if (ex instanceof DamagedByExecute && !shield){
+            block((DamagedByExecute) ex);
             return;
         }
         if (ex instanceof DamagedExecute){
@@ -75,9 +80,18 @@ public class WitcherPower extends Power implements IdlePower {
                 aksji(p);
                 CooldownApi.addCooldown("WITCHER-3", p, 10);
                 return;
+            case 4:
+                if(CooldownApi.isOnCooldown("WITCHER-4",p)) return;
+                yrden(p);
+                CooldownApi.addCooldown("WITCHER-4", p, 12);
+                return;
             default:
                 return;
         }
+    }
+
+    private void yrden(Player p) {
+
     }
 
     private void damagedExecute(DamagedExecute execute){
@@ -87,6 +101,7 @@ public class WitcherPower extends Power implements IdlePower {
         event.setCancelled(true);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 1.3f);
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1.4f);
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 2);
         player.setVelocity(player.getLocation().getDirection().clone().normalize().multiply(-0.4));
         CooldownApi.addCooldown("WITCHER-2", player, 10);
         quenParticles.cancel();
@@ -95,6 +110,7 @@ public class WitcherPower extends Power implements IdlePower {
 
     }
     private void aksji(Player p){
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1, 0.7f);
         Color c = Color.fromRGB(0,255,0);
         double lineSize = 1;
         Location l = p.getLocation().add(0, 1.6, 0).clone().add(p.getLocation().getDirection().clone().setY(0).normalize()).add(0, 0.2, 0).add(rotateVector(p.getLocation().getDirection().clone().setY(0).normalize().multiply(lineSize/2) ,-90));
@@ -129,6 +145,7 @@ public class WitcherPower extends Power implements IdlePower {
             }
         };
         quenParticles.runTaskTimer(magicPlugin, 0, 1);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1, 2);
         shield=true;
     }
 
@@ -172,6 +189,23 @@ public class WitcherPower extends Power implements IdlePower {
         }
     }
 
+    private void block(DamagedByExecute execute){
+        if (!(new Random().nextInt(4)==0)) return;
+        final Player player = execute.getPlayer();
+        if (!player.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("sword")) return;
+        ((EntityDamageByEntityEvent) execute.getRawEvent()).setCancelled(true);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 1.3f);
+        player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1.4f);
+        player.setVelocity(player.getLocation().getDirection().clone().normalize().multiply(-0.4));
+        Location l1 = player.getLocation().clone().add(0, 2, 0).add(player.getLocation().getDirection().clone().normalize().multiply(0.5).add(rotateVector(player.getLocation().getDirection().clone().normalize().multiply(0.3), 90)));
+        Location l2 = player.getLocation().clone().add(player.getLocation().getDirection().clone().normalize().multiply(0.5)).add(rotateVector(player.getLocation().getDirection().clone().normalize().multiply(0.3), -90));
+        for (Entity e: particleApi.drawColoredLine(l1, l2, 1, Color.GRAY, 1, 0)){
+            if (!(e instanceof LivingEntity)) continue;
+            if (e.equals(player)) continue;
+            ((Damageable) e).damage(4, player);
+        }
+    }
+
     private Vector rotateVector(Vector vector, double whatAngle) {
         whatAngle = Math.toRadians(whatAngle);
         double sin = Math.sin(whatAngle);
@@ -197,6 +231,7 @@ public class WitcherPower extends Power implements IdlePower {
             @Override
             public void run() {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 0));
+                if (p.getHealth()<5) p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
             }
         };
         r.runTaskTimer(magicPlugin, 0, 40);
