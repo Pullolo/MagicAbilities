@@ -38,6 +38,7 @@ public class PowerPlayer {
     }
 
     public void changePower(PowerType power){
+        if (getPower() instanceof WitcherPower) ((WitcherPower) getPower()).remove();
         if (idlePower!=null) idlePower.cancel();
         idlePower=null;
         Player owner = this.power.getOwner();
