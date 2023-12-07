@@ -225,8 +225,8 @@ public class WitcherPower extends Power implements IdlePower {
                 if (!(e instanceof LivingEntity)) continue;
                 if (e.equals(p)) continue;
                 if (hit.contains(e)) continue;
-                ((LivingEntity) e).damage(8, p);
                 e.setFireTicks(60);
+                ((LivingEntity) e).damage(8, p);
                 hit.add(e);
             }
         }
