@@ -108,8 +108,8 @@ public class LightningPower extends Power implements IdlePower {
                 for (Entity e : particleApi.drawColoredLine(l, dest, 1, colors[r.nextInt(colors.length)], 1, 0)){
                     if(!(e instanceof Damageable)) continue;
                     if (hit.contains(e) || e.equals(p)) continue;
-                    ((Damageable) e).damage(16, p);
                     e.setFireTicks(21);
+                    ((Damageable) e).damage(16, p);
                     hit.add(e);
                 }
 
