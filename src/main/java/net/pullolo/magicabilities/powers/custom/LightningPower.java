@@ -117,8 +117,13 @@ public class LightningPower extends Power implements IdlePower, Removeable {
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 1:
                 if (CooldownApi.isOnCooldown("LIG-2", p)) return;
-                shootLightningSparks(p);
-                CooldownApi.addCooldown("LIG-2", p, 3);
+                if (p.isSneaking()) {
+                    shootLightningSparks(p, 6);
+                    CooldownApi.addCooldown("LIG-2", p, 4);
+                    return;
+                }
+                shootLightningSparks(p, 3);
+                CooldownApi.addCooldown("LIG-2", p, 1.5);
                 return;
             case 2:
                 if (orb) return;
@@ -210,7 +215,7 @@ public class LightningPower extends Power implements IdlePower, Removeable {
         l.getWorld().spawn(l, LightningStrike.class);
     }
 
-    private void shootLightningSparks(Player p){
+    private void shootLightningSparks(Player p, int bolts){
         final Random r = new Random();
 
         Color[] colors = new Color[3];
@@ -238,12 +243,12 @@ public class LightningPower extends Power implements IdlePower, Removeable {
                     if(!(e instanceof Damageable)) continue;
                     if (hit.contains(e) || e.equals(p)) continue;
                     e.setFireTicks(21);
-                    ((Damageable) e).damage(16, p);
+                    ((Damageable) e).damage(18, p);
                     hit.add(e);
                 }
 
                 l = dest;
-                if (i > 3){
+                if (i > bolts){
                     particleApi.spawnParticles(dest, Particle.ELECTRIC_SPARK, 30, 0.1, 0.1,0.1, 1);
                     particleApi.spawnColoredParticles(dest, Color.BLUE, 2, 20, 1,1, 1);
                     p.getWorld().playSound(p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(3)),
