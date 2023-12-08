@@ -3,6 +3,7 @@ package net.pullolo.magicabilities.players;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.PowerType;
+import net.pullolo.magicabilities.powers.Removeable;
 import net.pullolo.magicabilities.powers.custom.WitcherPower;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class PowerPlayer {
     }
 
     public void changePower(PowerType power){
-        if (getPower() instanceof WitcherPower) ((WitcherPower) getPower()).remove();
+        if (getPower() instanceof Removeable) ((Removeable) getPower()).remove();
         if (idlePower!=null) idlePower.cancel();
         idlePower=null;
         Player owner = this.power.getOwner();
@@ -50,7 +51,7 @@ public class PowerPlayer {
     }
 
     public void remove(){
-        if (power instanceof WitcherPower) ((WitcherPower) power).remove();
+        if (power instanceof Removeable) ((Removeable) power).remove();
         if (idlePower!=null) idlePower.cancel();
         idlePower=null;
     }

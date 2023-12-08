@@ -3,6 +3,7 @@ package net.pullolo.magicabilities.powers.custom;
 import net.pullolo.magicabilities.misc.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
+import net.pullolo.magicabilities.powers.Removeable;
 import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,7 +30,7 @@ import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
-public class WitcherPower extends Power implements IdlePower {
+public class WitcherPower extends Power implements IdlePower, Removeable {
 
     private boolean shield = false;
     private BukkitRunnable quenParticles = null;
@@ -259,6 +260,7 @@ public class WitcherPower extends Power implements IdlePower {
         return vector.setX(x).setZ(z);
     }
 
+    @Override
     public void remove(){
         if (quenParticles!=null){
             quenParticles.cancel();
