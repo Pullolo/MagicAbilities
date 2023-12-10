@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class Enable implements CommandExecutor, TabCompleter {
@@ -24,6 +25,7 @@ public class Enable implements CommandExecutor, TabCompleter {
         Player p = (Player) sender;
         if (!players.containsKey(p)) return true;
         players.get(p).getPower().setEnabled(true);
+        getPlayerData(p).setEnabled(true);
         p.sendMessage(ChatColor.GREEN + "Your power is now enabled!");
         return true;
     }

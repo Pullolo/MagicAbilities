@@ -21,7 +21,7 @@ public class PowerPlayer {
     private BukkitRunnable idlePower = null;
     private final HashMap<Integer, Integer> binds;
 
-    public PowerPlayer(Power power, HashMap<Integer, Integer> binds) {
+    public PowerPlayer(Power power, HashMap<Integer, Integer> binds, boolean enabled) {
         this.power = power;
         this.activeSlot=this.power.getOwner().getInventory().getHeldItemSlot();
         this.binds = binds;
@@ -32,6 +32,7 @@ public class PowerPlayer {
         if (power instanceof IdlePower){
             idlePower=((IdlePower) power).executeIdle(new IdleExecute(null, power.getOwner()));
         }
+        power.setEnabled(enabled);
     }
 
     public Power getPower() {

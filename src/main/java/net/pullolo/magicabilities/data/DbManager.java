@@ -26,7 +26,7 @@ public class DbManager {
             Class.forName("org.sqlite.JDBC");
             this.conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
             Statement stmt = conn.createStatement();
-            String sql = "create table if not exists powers (name TEXT PRIMARY KEY NOT NULL, power TEXT NOT NULL);";
+            String sql = "create table if not exists powers (name TEXT PRIMARY KEY NOT NULL, power TEXT NOT NULL, enabled BOOLEAN NOT NULL);";
             stmt.execute(sql);
             String sql2 = "create table if not exists binds (name TEXT PRIMARY KEY NOT NULL," +
                     " ab0 INT NOT NULL, ab1 INT NOT NULL, ab2 INT NOT NULL, ab3 INT NOT NULL, ab4 INT NOT NULL, ab5 INT NOT NULL," +
@@ -72,8 +72,8 @@ public class DbManager {
         try{
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
-            String insert = "insert into powers (name, power) values" +
-                    " (?, ?);";
+            String insert = "insert into powers (name, power, enabled) values" +
+                    " (?, ?, 1);";
             String insert2 = "insert into binds (name, ab0, ab1, ab2, ab3, ab4, ab5, ab6, ab7, ab8) values" +
                     " (?, 0, 1, 2, 3, 4, 5, 6, 7, 8);";
 
@@ -111,9 +111,10 @@ public class DbManager {
             for (int i = 0; i<9; i++){
                 binds.put(i, rs2.getInt("ab"+i));
             }
-            pd = new PlayerData(playerName, PowerType.valueOf(rs.getString("power")), binds);
+            pd = new PlayerData(playerName, PowerType.valueOf(rs.getString("power")), binds, rs.getBoolean("enabled"));
 
             stmt.close();
+            stmt2.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,10 +127,11 @@ public class DbManager {
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection("jdbc:sqlite:plugins/"+plugin.getDataFolder().getName()+"/data.db");
 
-            String update = "update powers set power=? where name=?;";
+            String update = "update powers set power=?, enabled=? where name=?;";
             PreparedStatement stmt = conn.prepareStatement(update);
             stmt.setString(1, pd.getPower().toString());
-            stmt.setString(2, name);
+            stmt.setBoolean(2, pd.isEnabled());
+            stmt.setString(3, name);
             stmt.execute();
             stmt.close();
 

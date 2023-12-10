@@ -2,14 +2,17 @@ package net.pullolo.magicabilities.data;
 
 import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.pullolo.magicabilities.MagicAbilities.debugLog;
+import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.data.PlayerData.*;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
@@ -34,7 +37,13 @@ public class DataEventsHandler implements Listener {
             event.getPlayer().kickPlayer("Invalid Name!");
         }
         setPlayerDataFromDb(event.getPlayer(), dbManager);
-        new PowerPlayer(Power.getPowerFromPowerType(event.getPlayer(), getPlayerData(event.getPlayer()).getPower()), getPlayerData(event.getPlayer()).getBinds());
+        new PowerPlayer(Power.getPowerFromPowerType(event.getPlayer(), getPlayerData(event.getPlayer()).getPower()), getPlayerData(event.getPlayer()).getBinds(), getPlayerData(event.getPlayer()).isEnabled());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                event.getPlayer().sendMessage(ChatColor.GREEN + "Your power is " + (getPlayerData(event.getPlayer()).isEnabled() ? "enabled" : "disabled") + "!");
+            }
+        }.runTaskLater(magicPlugin, 1);
         //getPlayerQuestsOnJoin(event.getPlayer());
     }
 

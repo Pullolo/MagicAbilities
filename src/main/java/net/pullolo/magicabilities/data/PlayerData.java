@@ -10,11 +10,13 @@ public class PlayerData {
     private final String name;
     private PowerType powerType;
     private HashMap<Integer, Integer> binds;
+    private boolean enabled;
 
-    public PlayerData(String name, PowerType powerType, HashMap<Integer, Integer> binds) {
+    public PlayerData(String name, PowerType powerType, HashMap<Integer, Integer> binds, boolean enabled) {
         this.name = name;
         this.powerType = powerType;
         this.binds = binds;
+        this.enabled = enabled;
     }
     public static PlayerData getPlayerData(Player p){
         return playerData.get(p);
@@ -48,5 +50,13 @@ public class PlayerData {
 
     public void setBinds(HashMap<Integer, Integer> binds) {
         this.binds = binds;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

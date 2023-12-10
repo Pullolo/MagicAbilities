@@ -4,6 +4,8 @@ import net.pullolo.magicabilities.powers.custom.*;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import org.bukkit.entity.Player;
 
+import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
+
 public abstract class Power {
     private final Player owner;
     private boolean enabled = true;
