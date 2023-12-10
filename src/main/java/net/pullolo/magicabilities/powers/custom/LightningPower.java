@@ -35,20 +35,21 @@ public class LightningPower extends Power implements IdlePower, Removeable {
 
     @Override
     public void executePower(Execute ex) {
-        if (ex instanceof LeftClickExecute){
-            executeLeftClick((LeftClickExecute) ex);
-            return;
-        }
-        if (ex instanceof DealDamageExecute){
-            dealDamageExecute((DealDamageExecute) ex);
-            return;
-        }
         if (ex instanceof DamagedExecute){
             preventSelfDamage((DamagedExecute) ex);
             return;
         }
         if (ex instanceof DamagedByExecute){
             damagedByExecute((DamagedByExecute) ex);
+            return;
+        }
+        if (!isEnabled()) return;
+        if (ex instanceof LeftClickExecute){
+            executeLeftClick((LeftClickExecute) ex);
+            return;
+        }
+        if (ex instanceof DealDamageExecute){
+            dealDamageExecute((DealDamageExecute) ex);
             return;
         }
     }

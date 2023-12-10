@@ -33,16 +33,17 @@ public class PotatoPower extends Power {
 
     @Override
     public void executePower(Execute ex) {
+        if (ex instanceof ConsumeExecute){
+            consumeExecute((ConsumeExecute) ex);
+            return;
+        }
+        if (!isEnabled()) return;
         if (ex instanceof RightClickExecute){
             executeRightClick((RightClickExecute) ex);
             return;
         }
         if (ex instanceof SneakExecute){
             sneakExecute((SneakExecute) ex);
-            return;
-        }
-        if (ex instanceof ConsumeExecute){
-            consumeExecute((ConsumeExecute) ex);
             return;
         }
     }

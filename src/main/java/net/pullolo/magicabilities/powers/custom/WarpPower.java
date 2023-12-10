@@ -28,6 +28,7 @@ public class WarpPower extends Power {
 
     @Override
     public void executePower(Execute ex) {
+        if (!isEnabled()) return;
         if (ex instanceof LeftClickExecute){
             executeLeftClick((LeftClickExecute) ex);
             return;

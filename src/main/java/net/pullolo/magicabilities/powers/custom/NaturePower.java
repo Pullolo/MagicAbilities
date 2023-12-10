@@ -7,6 +7,7 @@ import net.pullolo.magicabilities.powers.executions.Execute;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import net.pullolo.magicabilities.powers.executions.MoveExecute;
 import net.pullolo.magicabilities.powers.executions.SneakExecute;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.TreeType;
@@ -34,6 +35,7 @@ public class NaturePower extends Power implements IdlePower {
             onMove((MoveExecute) ex);
             return;
         }
+        if (!isEnabled()) return;
         if (ex instanceof SneakExecute){
             onSneak((SneakExecute) ex);
             return;
@@ -44,8 +46,9 @@ public class NaturePower extends Power implements IdlePower {
         final Player p = execute.getPlayer();
         if (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())!=0) return;
         if (CooldownApi.isOnCooldown("NATURE-0", p)) return;
-        p.getWorld().generateTree(p.getLocation().clone().add(p.getLocation().getDirection().clone().setY(0).normalize()), TreeType.values()[new Random().nextInt(TreeType.values().length)]);
-        CooldownApi.addCooldown("NATURE-0", p, 10);
+        if (p.getWorld().generateTree(p.getLocation().clone().add(p.getLocation().getDirection().clone().setY(0).normalize()), TreeType.values()[new Random().nextInt(TreeType.values().length)])){
+            CooldownApi.addCooldown("NATURE-0", p, 10);
+        } else p.sendMessage(ChatColor.RED + "Couldn't spawn a tree here!");
     }
 
     private void onMove(MoveExecute execute){

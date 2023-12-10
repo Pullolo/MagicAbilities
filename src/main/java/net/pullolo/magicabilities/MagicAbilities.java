@@ -1,8 +1,6 @@
 package net.pullolo.magicabilities;
 
-import net.pullolo.magicabilities.commands.Binds;
-import net.pullolo.magicabilities.commands.Destination;
-import net.pullolo.magicabilities.commands.Setpower;
+import net.pullolo.magicabilities.commands.*;
 import net.pullolo.magicabilities.data.DataEventsHandler;
 import net.pullolo.magicabilities.data.DbManager;
 import net.pullolo.magicabilities.data.PlayerData;
@@ -48,6 +46,8 @@ public final class MagicAbilities extends JavaPlugin {
         registerCommand(new Binds(), "binds");
         registerCommand(new Destination(), "destination");
         registerCommand(new Setpower(), "setpower");
+        registerCommand(new Enable(), "enable");
+        registerCommand(new Disable(), "disable");
         final GuiManager guiManager = new GuiManager(this);
         final AnimationManager animationManager = new AnimationManager(this, guiManager);
     }

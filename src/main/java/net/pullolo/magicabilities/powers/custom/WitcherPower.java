@@ -41,16 +41,17 @@ public class WitcherPower extends Power implements IdlePower, Removeable {
 
     @Override
     public void executePower(Execute ex) {
-        if (ex instanceof LeftClickExecute){
-            executeLeftClick((LeftClickExecute) ex);
-            return;
-        }
         if (ex instanceof DamagedByExecute && !shield){
             block((DamagedByExecute) ex);
             return;
         }
         if (ex instanceof DamagedExecute){
             damagedExecute((DamagedExecute) ex);
+            return;
+        }
+        if (!isEnabled()) return;
+        if (ex instanceof LeftClickExecute){
+            executeLeftClick((LeftClickExecute) ex);
             return;
         }
     }

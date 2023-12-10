@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 public abstract class Power {
     private final Player owner;
+    private boolean enabled = true;
 
     public Power(Player owner) {
         this.owner = owner;
@@ -53,5 +54,13 @@ public abstract class Power {
 
     public String getAbilityName(int ability) {
         return "&7none";
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -41,16 +41,13 @@ public class IcePower extends Power implements IdlePower {
             moveExecution((MoveExecute) ex);
             return;
         }
+        if (!isEnabled()) return;
         if (ex instanceof DamagedByExecute){
             damagedByExecute((DamagedByExecute) ex);
             return;
         }
         if (ex instanceof LeftClickExecute){
             executeLeftClick((LeftClickExecute) ex);
-            return;
-        }
-        if (ex instanceof RightClickExecute){
-            executeRightClick((RightClickExecute) ex);
             return;
         }
         if (ex instanceof DamagedExecute){
@@ -73,13 +70,6 @@ public class IcePower extends Power implements IdlePower {
             ){
                 event.setCancelled(true);
             }
-        }
-    }
-
-    private void executeRightClick(RightClickExecute ex){
-        final Player p = ex.getPlayer();
-        if (!p.equals(getOwner())){
-            throw new RuntimeException("Event player does not match the power owner!");
         }
     }
 

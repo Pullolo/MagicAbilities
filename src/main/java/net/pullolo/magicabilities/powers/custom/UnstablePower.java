@@ -54,6 +54,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
             onEat(ex.getPlayer(), ((PlayerItemConsumeEvent) ex.getRawEvent()).getItem().getType());
             return;
         }
+        if (!isEnabled()) return;
         if (ex instanceof LeftClickExecute){
             executeLeftClick((LeftClickExecute) ex);
             return;

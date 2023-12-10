@@ -13,3 +13,9 @@ commands:
     description: Set power
     usage: /<command> <player> <power>
     permission: magic.admin
+  enable:
+    description: Enable powers
+    usage: /<command>
+  disable:
+    description: Disable powers
+    usage: /<command>

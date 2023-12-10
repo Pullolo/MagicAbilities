@@ -37,20 +37,21 @@ public class ShogunPower extends Power implements IdlePower {
 
     @Override
     public void executePower(Execute ex) {
-        if (ex instanceof RightClickExecute){
-            executeRightClick((RightClickExecute) ex);
-            return;
-        }
         if (ex instanceof DamagedByExecute){
             block((DamagedByExecute) ex);
             return;
         }
+        if (ex instanceof DamagedExecute){
+            damagedExecute((DamagedExecute) ex);
+            return;
+        }
+        if (!isEnabled()) return;
         if (ex instanceof SneakExecute){
             executeDoubleJump((SneakExecute) ex);
             return;
         }
-        if (ex instanceof DamagedExecute){
-            damagedExecute((DamagedExecute) ex);
+        if (ex instanceof RightClickExecute){
+            executeRightClick((RightClickExecute) ex);
             return;
         }
     }
