@@ -148,11 +148,11 @@ public class WarpPower extends Power implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
-                        Particle.PORTAL, 20, 0.3, 0.3, 0.3, 0.1);
+                particleApi.spawnParticles(p.getLocation().clone().add(0, 0.6, 0),
+                        Particle.PORTAL, 10, 0.3, 0.3, 0.3, 0.1);
             }
         };
-        r.runTaskTimer(magicPlugin, 0, 5);
+        r.runTaskTimer(magicPlugin, 0, 10);
         return r;
     }
 }
