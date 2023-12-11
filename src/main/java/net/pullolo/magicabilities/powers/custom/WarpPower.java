@@ -1,8 +1,10 @@
 package net.pullolo.magicabilities.powers.custom;
 
 import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
+import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
 import net.pullolo.magicabilities.powers.executions.RightClickExecute;
 import org.bukkit.*;
@@ -19,7 +21,7 @@ import static net.pullolo.magicabilities.MagicAbilities.particleApi;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
-public class WarpPower extends Power {
+public class WarpPower extends Power implements IdlePower {
     protected Location dest;
     public WarpPower(Player owner) {
         super(owner);
@@ -138,5 +140,19 @@ public class WarpPower extends Power {
             default:
                 return "&7none";
         }
+    }
+
+    @Override
+    public BukkitRunnable executeIdle(IdleExecute ex) {
+        final Player p = ex.getPlayer();
+        BukkitRunnable r = new BukkitRunnable() {
+            @Override
+            public void run() {
+                particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
+                        Particle.PORTAL, 20, 0.3, 0.3, 0.3, 0.1);
+            }
+        };
+        r.runTaskTimer(magicPlugin, 0, 5);
+        return r;
     }
 }
