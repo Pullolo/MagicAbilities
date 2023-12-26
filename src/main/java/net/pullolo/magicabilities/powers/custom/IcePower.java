@@ -41,19 +41,20 @@ public class IcePower extends Power implements IdlePower {
             moveExecution((MoveExecute) ex);
             return;
         }
-        if (!isEnabled()) return;
         if (ex instanceof DamagedByExecute){
             damagedByExecute((DamagedByExecute) ex);
-            return;
-        }
-        if (ex instanceof LeftClickExecute){
-            executeLeftClick((LeftClickExecute) ex);
             return;
         }
         if (ex instanceof DamagedExecute){
             executeDamaged((DamagedExecute) ex);
             return;
         }
+        if (!isEnabled()) return;
+        if (ex instanceof LeftClickExecute){
+            executeLeftClick((LeftClickExecute) ex);
+            return;
+        }
+
     }
 
     private void executeDamaged(DamagedExecute execute){
