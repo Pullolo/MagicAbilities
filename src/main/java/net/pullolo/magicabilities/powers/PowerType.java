@@ -12,5 +12,6 @@ public enum PowerType {
     FIRE,
     WITCHER,
     NATURE,
-    NONE
+    NONE,
+    TWILIGHT_MIRAGE
 }

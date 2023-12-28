@@ -110,7 +110,7 @@ public class FirePower extends Power implements IdlePower {
 
                 if (r.nextBoolean()) particleApi.spawnParticles(ground.clone().add(0, 1, 0), Particle.FLAME, r.nextInt(10)+1, 0.1, 0.1, 0.1, 0.01);
                 as.teleport(as.getLocation().add(v.normalize().multiply(speed)));
-                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.FIRE) && (ground.clone().getBlock().getType().equals(Material.AIR) || ground.clone().getBlock().getType().equals(Material.GRASS))) {
+                if(!old.containsKey(ground.clone().getBlock()) && !ground.clone().getBlock().getType().equals(Material.FIRE) && (ground.clone().getBlock().getType().equals(Material.AIR) || ground.clone().getBlock().getType().equals(Material.SHORT_GRASS) || ground.clone().getBlock().getType().equals(Material.TALL_GRASS))) {
                     old.put(ground.clone().getBlock(), ground.clone().getBlock().getType());
                     ground.clone().getBlock().setType(Material.FIRE);
                 }

@@ -61,7 +61,7 @@ public class NaturePower extends Power implements IdlePower {
             return;
         }
         if (event.getTo().getBlock().getType().equals(Material.AIR) && event.getTo().clone().add(0, -1, 0).getBlock().getType().equals(Material.GRASS_BLOCK)){
-            event.getTo().getBlock().setType(Material.GRASS);
+            event.getTo().getBlock().setType(Material.SHORT_GRASS);
         }
     }
 

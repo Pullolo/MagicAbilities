@@ -44,6 +44,8 @@ public abstract class Power {
                 return new WitcherPower(p);
             case NATURE:
                 return new NaturePower(p);
+            case TWILIGHT_MIRAGE:
+                return new TwilightMirage(p);
             default:
                 return new Power(p) {
                     @Override
