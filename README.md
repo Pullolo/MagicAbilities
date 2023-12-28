@@ -22,6 +22,7 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
   - 💛 - Potato Power (Added for fun, Some new features to potatoes) 🥔
   - 💛 - The Witcher 🐺
   - 💛 - Nature 🌳
+  - ❤️ - Twilight Mirage ☄️
 
 
 > [!IMPORTANT]

@@ -5,10 +5,12 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class ParticleApi {
 
@@ -68,6 +70,35 @@ public class ParticleApi {
                     }
                 }
                 spawnParticles(loc, p, 1, 0, 0, 0, 0.01);
+                loc.add(dir);
+            }
+        }
+        return lineThrough;
+    }
+
+    public ArrayList<Entity> drawMultiParticleLineWRTO(Location l1, Location l2, double precision, HashMap<Particle, Double> proportions, double lineOffset, int randomTimeOffset){
+        Random r = new Random();
+        ArrayList<Entity> lineThrough = new ArrayList<>();
+        Location startPos = l1.clone();
+        Location loc = l1.clone();
+        double step = precision/0.1;
+        Vector dir = l2.toVector().subtract(l1.toVector()).normalize().multiply((double) 1/step);
+        double fullDist = startPos.distance(l2)*step;
+        loc.add(dir.clone().normalize().multiply(lineOffset));
+        for (Particle p : proportions.keySet()){
+            for (int i = 0; i<fullDist*proportions.get(p); i++){
+                final Location l = loc.clone();
+                for (Entity e : loc.getWorld().getNearbyEntities(loc, 1, 1, 1)){
+                    if (!lineThrough.contains(e)){
+                        lineThrough.add(e);
+                    }
+                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        spawnParticles(l, p, 1, 0, 0, 0, 0.01);
+                    }
+                }.runTaskLater(plugin, r.nextInt(randomTimeOffset));
                 loc.add(dir);
             }
         }
