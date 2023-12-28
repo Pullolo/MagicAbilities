@@ -501,7 +501,7 @@ public class IcePower extends Power implements IdlePower {
             if (sb.getType().equals(Material.FROSTED_ICE) || sb.getType().equals(Material.ICE) || sb.getType().equals(Material.OBSIDIAN) || sb.getType().equals(Material.SNOW)){
                 return;
             }
-            b.setType(Material.SNOW);
+            if (new Random().nextInt(7)==0) b.setType(Material.SNOW);
             return;
         }
     }
