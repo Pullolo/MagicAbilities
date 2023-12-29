@@ -6,10 +6,7 @@ import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Warden;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -26,6 +23,7 @@ import java.util.Random;
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
+import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class TwilightMirage extends Power implements IdlePower {
@@ -84,17 +82,149 @@ public class TwilightMirage extends Power implements IdlePower {
             case 1:
                 if (CooldownApi.isOnCooldown("TM-2", p)) return;
                 twilightFloat(p);
-                CooldownApi.addCooldown("TM-2", p, 10);
+                CooldownApi.addCooldown("TM-2", p, 3);
                 return;
+            case 2:
+                if (CooldownApi.isOnCooldown("TM-3", p)) return;
+                magicMissile(p, 0);
+                CooldownApi.addCooldown("TM-3", p, 4);
+                return;
+            case 3:
+                if (CooldownApi.isOnCooldown("TM-4", p)) return;
+                healingMirage(p);
+                CooldownApi.addCooldown("TM-4", p, 30);
+                return;
+        }
+    }
+
+    private void healingMirage(Player p){
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1, 0.5f);
+        Location hmLoc = p.getLocation().clone();
+        final Vector step = hmLoc.getDirection().clone().setY(0).normalize().multiply(4);
+        new BukkitRunnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                if (i%20==0){
+                    for (Entity e : hmLoc.getWorld().getNearbyEntities(hmLoc, 3, 3, 3)){
+                        if (!(e instanceof Player)) continue;
+                        ((Player) e).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 41, isNight(p) ? 2 : 1));
+                    }
+                    for (int j = 0; j<90; j++){
+                        Location loc = hmLoc.clone().add(rotateVector(step.clone(), j*4));
+                        particleApi.spawnParticles(loc.clone(), Particle.EGG_CRACK, 1, 0, 0, 0, 0.01);
+                    }
+                }
+
+                particleApi.spawnParticles(hmLoc, Particle.GLOW, 5, 2, 2, 2, 1);
+
+                if (i>120){
+                    cancel();
+                    return;
+                }
+                i++;
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
+    }
+
+    private void magicMissile(Player p, int vectorRotate){
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 2);
+        ArmorStand as = p.getWorld().spawn(p.getLocation().add(0, 1.5, 0), ArmorStand.class, en -> {
+            en.setVisible(false);
+            en.setGravity(false);
+            en.setSmall(true);
+            en.setMarker(true);
+        });
+
+        Location dest = p.getLocation().add(rotateVector(p.getLocation().getDirection(), vectorRotate).multiply(10));
+        Vector v = dest.subtract(p.getLocation()).toVector();
+
+        double s = 1;
+        int d = 20;
+
+        Color[] colors = new Color[3];
+        colors[0] = Color.fromRGB(255, 59, 232);
+        colors[1] = Color.fromRGB(0, 255, 217);
+        colors[2] = Color.fromRGB(240, 214, 255);
+
+        new BukkitRunnable(){
+            final Random r = new Random();
+            final int distance = d;
+            final double speed = s;
+            int i = 1;
+
+            @Override
+            public void run() {
+                if (p == null){
+                    as.remove();
+                    cancel();
+                }
+
+                particleApi.spawnColoredParticles(as.getLocation(), colors[r.nextInt(colors.length)], 1, 3, 0.01, 0.01, 0.01);
+                if (r.nextBoolean()) particleApi.spawnParticles(as.getLocation(), Particle.GLOW, r.nextInt(10)+1, 0.01, 0.01, 0.01, 0.01);
+                as.teleport(as.getLocation().add(v.normalize().multiply(speed)));
+
+                for (Entity entity : as.getLocation().getChunk().getEntities()){
+                    if (!as.isDead()){
+                        if (entity instanceof ArmorStand){
+                            continue;
+                        }
+                        if (as.getLocation().distanceSquared(entity.getLocation()) <= 3.8){
+                            if (!entity.equals(p)){
+                                if (entity instanceof LivingEntity){
+                                    ((LivingEntity) entity).damage(isNight(p) ? 22 : 14, p);
+                                    ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 0));
+                                    spellExplode(p, as.getLocation().clone());
+                                    as.remove();
+                                    cancel();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                boolean l = as.getLocation().clone().getBlock().isLiquid();
+                if (!as.getLocation().clone().getBlock().isPassable() || l){
+                    if (!as.isDead()){
+                        spellExplode(p, as.getLocation().clone());
+                        as.remove();
+                        cancel();
+                    }
+                }
+
+                if (i > distance){
+                    if (!as.isDead()){
+                        spellExplode(p, as.getLocation().clone());
+                        as.remove();
+                        cancel();
+                    }
+                }
+                i++;
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
+    }
+
+    private void spellExplode(Player p, Location l){
+        particleApi.spawnParticles(l, Particle.GUST, 1, 0, 0, 0, 1);
+        particleApi.spawnParticles(l, Particle.GLOW, 100, 1, 1, 1, 10);
+        particleApi.spawnParticles(l, Particle.FIREWORKS_SPARK, 100, 0.1, 0.1, 0.1, 0.4);
+        l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 0.6f);
+        l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1, 0.9f);
+        l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, 1, 1);
+        l.getWorld().playSound(l, Sound.ENTITY_WARDEN_SONIC_BOOM, 1, 2);
+        for (Entity e : l.getWorld().getNearbyEntities(l, 2, 2, 2)){
+            if (e instanceof LivingEntity){
+                ((LivingEntity) e).damage(isNight(p) ? 16 : 10, p);
+            }
         }
     }
 
     private void twilightFloat(Player p){
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 1, 1.3f);
-        p.setVelocity(new Vector(0, 1, 0).normalize().multiply(2));
+        p.setVelocity(new Vector(0, 1, 0).normalize().multiply(0.8));
         particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0), Particle.GLOW,
                 60, 1, 1, 1, 0.6);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 100, 0));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 55, 0));
     }
 
     private void shriekTransition(Player p){
@@ -190,17 +320,24 @@ public class TwilightMirage extends Power implements IdlePower {
         return !(p.getWorld().getTime()<12300 || p.getWorld().getTime()>23850);
     }
 
+    private boolean isClearWeather(Player p){
+        return p.getWorld().isClearWeather();
+    }
+
     @Override
     public BukkitRunnable executeIdle(IdleExecute ex) {
         final Player p = ex.getPlayer();
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                if (p.isInWater() && !isNight(p)){
+                if (p.isInWater() && !isNight(p) && isClearWeather(p)){
                     p.damage(0.5);
                 }
                 if (p.getLocation().getBlock().getLightLevel()>14){
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+                }
+                if (p.hasPotionEffect(PotionEffectType.WITHER)){
+                    p.removePotionEffect(PotionEffectType.WITHER);
                 }
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
                         Particle.SCULK_SOUL, 4, 0.6, 0.6, 0.6, 0.01);
@@ -216,7 +353,11 @@ public class TwilightMirage extends Power implements IdlePower {
             case 0:
                 return "&9Shriek Transition";
             case 1:
-                return "&9Twilight Float";
+                return "&9Twilight Leap";
+            case 2:
+                return "&9Magic Missile";
+            case 3:
+                return "&9Healing Mirage";
             default:
                 return "&7none";
         }
