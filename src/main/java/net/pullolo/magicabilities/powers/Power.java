@@ -46,6 +46,8 @@ public abstract class Power {
                 return new NaturePower(p);
             case TWILIGHT_MIRAGE:
                 return new TwilightMirage(p);
+            case ETERNITY:
+                return new Eternity(p);
             default:
                 return new Power(p) {
                     @Override
