@@ -23,6 +23,7 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
   - 💛 - The Witcher 🐺
   - 💛 - Nature 🌳
   - ❤️ - Twilight Mirage ☄️
+  - 💛 - Eternity ⚔️
 
 
 > [!IMPORTANT]
