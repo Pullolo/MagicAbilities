@@ -66,11 +66,11 @@ public class PotatoPower extends Power {
         }
         if (event.getItem().getType().toString().toLowerCase().contains("potato")){
             p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 0));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 300, 0));
+            p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 300, 0));
             return;
         }
         p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 300, 1));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 600, 0));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 600, 0));
     }
 
     private void executeRightClick(RightClickExecute execute){

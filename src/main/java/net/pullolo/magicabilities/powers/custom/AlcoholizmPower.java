@@ -54,9 +54,9 @@ public class AlcoholizmPower extends Power implements IdlePower {
                     }
                     drunk=true;
                     p.getActivePotionEffects().clear();
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20*1500, 4));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20*60, 4));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20*1500, 2));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20*1500, 4));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20*60, 4));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 20*1500, 2));
                     if (new Random().nextInt(10)==0) p.setVelocity(p.getLocation().getDirection().clone().normalize().multiply(3));
                 }
             }
@@ -84,17 +84,17 @@ public class AlcoholizmPower extends Power implements IdlePower {
             public void run() {
                 if (p.getFoodLevel()>=16){
                     if (!drunk){
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 41, 0));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 41, 0));
                         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 41, 0));
                     }
                 }
                 for (PotionEffect pot : p.getActivePotionEffects()){
-                    if (pot.getType().equals(PotionEffectType.INCREASE_DAMAGE)){
+                    if (pot.getType().equals(PotionEffectType.STRENGTH)){
                         return;
                     }
                 }
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 41, 0));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 41, 0));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 41, 0));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 41, 0));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 41, 0));
             }
         };

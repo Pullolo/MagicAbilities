@@ -207,7 +207,7 @@ public class TwilightMirage extends Power implements IdlePower {
     private void spellExplode(Player p, Location l){
         particleApi.spawnParticles(l, Particle.GUST, 1, 0, 0, 0, 1);
         particleApi.spawnParticles(l, Particle.GLOW, 100, 1, 1, 1, 10);
-        particleApi.spawnParticles(l, Particle.FIREWORKS_SPARK, 100, 0.1, 0.1, 0.1, 0.4);
+        particleApi.spawnParticles(l, Particle.FIREWORK, 100, 0.1, 0.1, 0.1, 0.4);
         l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 0.6f);
         l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1, 0.9f);
         l.getWorld().playSound(l, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, 1, 1);
@@ -310,7 +310,7 @@ public class TwilightMirage extends Power implements IdlePower {
             }
             p.setVelocity(p.getLocation().getDirection().clone().normalize().multiply(-0.4));
             p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 1, 1);
-            particleApi.spawnParticles(p.getLocation(), Particle.TOTEM,
+            particleApi.spawnParticles(p.getLocation(), Particle.TOTEM_OF_UNDYING,
                     100, 1, 1, 1, 0.6);
             return;
         }
@@ -334,7 +334,7 @@ public class TwilightMirage extends Power implements IdlePower {
                     p.damage(0.5);
                 }
                 if (p.getLocation().getBlock().getLightLevel()>14){
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
                 }
                 if (p.hasPotionEffect(PotionEffectType.WITHER)){
                     p.removePotionEffect(PotionEffectType.WITHER);

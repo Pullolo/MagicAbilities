@@ -174,7 +174,7 @@ public class WitcherPower extends Power implements IdlePower, Removeable {
         for (Entity e : p.getWorld().getNearbyEntities(p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(3)), 4, 4, 4)){
             if (!(e instanceof LivingEntity)) continue;
             if (e.equals(p)) continue;
-            ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 255));
+            ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 80, 255));
         }
     }
     private void quen(Player p){

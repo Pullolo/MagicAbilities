@@ -188,7 +188,7 @@ public class IcePower extends Power implements IdlePower {
             }
         }
         p.getWorld().playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 0.9f+new Random().nextFloat());
-        particleApi.spawnParticles(p.getLocation(), Particle.FIREWORKS_SPARK, 60, 0.01, 0.01, 0.01, 0.5);
+        particleApi.spawnParticles(p.getLocation(), Particle.FIREWORK, 60, 0.01, 0.01, 0.01, 0.5);
         particleApi.spawnParticles(p.getLocation(), Particle.SNOWFLAKE, 60, 0.01, 0.01, 0.01, 0.3);
         spawnIceSpikesParticles(p.getLocation().clone().add(0, 1, 0));
     }
@@ -376,7 +376,7 @@ public class IcePower extends Power implements IdlePower {
         particleApi.spawnParticles(l.clone(),
                 Particle.SNOWFLAKE, 40, 0.4, 0.4, 0.4, 0.01);
         particleApi.spawnColoredParticles(l, colors[new Random().nextInt(colors.length)], 1, 10, 0.7, 0.7, 0.7);
-        particleApi.spawnParticles(l, Particle.SNOWBALL, 60, 1, 1, 1, 1);
+        particleApi.spawnParticles(l, Particle.SNOWFLAKE, 60, 1, 1, 1, 1);
         l.getWorld().playSound(l, Sound.BLOCK_GLASS_BREAK, 1, 1+new Random().nextFloat());
     }
 

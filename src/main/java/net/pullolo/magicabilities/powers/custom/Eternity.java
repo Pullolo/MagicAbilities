@@ -220,7 +220,7 @@ public class Eternity extends Power implements IdlePower {
 
     private void gainImmunity(Player p){
         if (CooldownApi.isOnCooldown("ET-0", p)) return;
-        p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, onUlt ? 40 : 20, 255));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, onUlt ? 40 : 20, 255));
         CooldownApi.addCooldown("ET-0", p, 2);
     }
 
@@ -241,7 +241,7 @@ public class Eternity extends Power implements IdlePower {
             @Override
             public void run() {
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
-                        Particle.SPELL_WITCH, 3, 0.1, 0.3, 0.1, 0.01);
+                        Particle.WITCH, 3, 0.1, 0.3, 0.1, 0.01);
             }
         };
         r.runTaskTimer(magicPlugin, 0, 15);

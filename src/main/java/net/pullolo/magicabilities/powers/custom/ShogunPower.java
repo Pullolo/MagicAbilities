@@ -109,7 +109,7 @@ public class ShogunPower extends Power implements IdlePower {
     }
 
     private void spawnParticles(Player p){
-        particleApi.spawnParticles(p.getLocation().clone().add(0, 0.3, 0), Particle.SMOKE_NORMAL, 30, 0.1, 0.05, 0.1, 0.1);
+        particleApi.spawnParticles(p.getLocation().clone().add(0, 0.3, 0), Particle.SMOKE, 30, 0.1, 0.05, 0.1, 0.1);
     }
 
     private void block(DamagedByExecute execute){
@@ -136,7 +136,7 @@ public class ShogunPower extends Power implements IdlePower {
             @Override
             public void run() {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 16, 0));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 16, 1));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 16, 1));
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
                         Particle.CRIT, 5, 0.3, 0.3, 0.3, 0.01);
             }

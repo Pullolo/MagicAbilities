@@ -93,7 +93,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
         if (event.getFinalDamage()>p.getHealth() && random.nextInt(5)==0){
             event.setCancelled(true);
             p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 1, 1);
-            particleApi.spawnParticles(p.getLocation(), Particle.TOTEM, 100, 0.4, 0.4, 0.4, 0.3);
+            particleApi.spawnParticles(p.getLocation(), Particle.TOTEM_OF_UNDYING, 100, 0.4, 0.4, 0.4, 0.3);
             explode(p);
             return;
         }
@@ -107,12 +107,12 @@ public class UnstablePower extends WarpPower implements IdlePower {
             CooldownApi.addCooldown("UNS-H1", p, 300);
         } else if (random.nextInt(38)==0){
             explode(p);
-        } else particleApi.spawnParticles(p.getLocation(), Particle.SMOKE_LARGE, 5, 1, 1, 1, 0.2);
+        } else particleApi.spawnParticles(p.getLocation(), Particle.LARGE_SMOKE, 5, 1, 1, 1, 0.2);
     }
 
     private void explode(Player p) {
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1.5f);
-        particleApi.spawnParticles(p.getLocation(), Particle.EXPLOSION_NORMAL, 2, 0 ,0, 0, 1);
+        particleApi.spawnParticles(p.getLocation(), Particle.EXPLOSION, 2, 0 ,0, 0, 1);
         spawnExplodeParticles(p.getLocation());
         for (Entity e : p.getNearbyEntities(6, 6, 6)){
             if (!(e instanceof Damageable)) continue;
@@ -139,7 +139,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
     private void moveExecution(MoveExecute ex) {
         Player p = ex.getPlayer();
         if (random.nextInt(50)==0){
-            particleApi.spawnParticles(p.getLocation(), Particle.ENCHANTMENT_TABLE, 30, 1, 1, 1, 0.1);
+            particleApi.spawnParticles(p.getLocation(), Particle.ENCHANT, 30, 1, 1, 1, 0.1);
         }
         if (random.nextInt(400)==0){
             p.setVelocity(p.getLocation().getDirection().multiply(2).add(new Vector(0, 2, 0)));
@@ -178,7 +178,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
     }
 
     private void heal(Player p){
-        particleApi.spawnParticles(p.getLocation(), Particle.VILLAGER_HAPPY, 30, 0.3, 0.3, 0.3, 1);
+        particleApi.spawnParticles(p.getLocation(), Particle.HAPPY_VILLAGER, 30, 0.3, 0.3, 0.3, 1);
         if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()<20){
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()+2);
         }
@@ -236,7 +236,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
                 }
 
                 particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
-                        Particle.ENCHANTMENT_TABLE, 5, 0.3, 0.3, 0.3, 0.01);
+                        Particle.ENCHANT, 5, 0.3, 0.3, 0.3, 0.01);
             }
         };
         r.runTaskTimer(magicPlugin, 0, 40);
