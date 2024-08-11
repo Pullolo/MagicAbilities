@@ -88,13 +88,11 @@ public final class MagicAbilities extends JavaPlugin {
         for (Player p : getServer().getOnlinePlayers()){
             PlayerData.setPlayerDataFromDb(p, db);
             new PowerPlayer(Power.getPowerFromPowerType(p, getPlayerData(p).getPower()), getPlayerData(p).getBinds(), getPlayerData(p).isEnabled());
-            //QuestManager.getPlayerQuestsOnJoin(p);
         }
     }
 
     private void savePlayers(DbManager db){
         for (Player p : getServer().getOnlinePlayers()){
-//          QuestManager.savePlayerQuestsOnLeave(p);
             PlayerData.savePlayerDataToDb(p, db);
             PlayerData.removePlayerData(p);
             players.get(p).remove();

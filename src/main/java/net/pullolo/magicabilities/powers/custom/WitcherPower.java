@@ -98,7 +98,7 @@ public class WitcherPower extends Power implements IdlePower, Removeable {
         Location l = p.getLocation().clone().add(p.getLocation().getDirection().clone().setY(0).normalize().multiply(2));
         final Vector step = l.getDirection().clone().setY(0).normalize().multiply(4);
         new BukkitRunnable() {
-            ArrayList<LivingEntity> modified = new ArrayList<>();
+            final ArrayList<LivingEntity> modified = new ArrayList<>();
             int i = 0;
             @Override
             public void run() {
