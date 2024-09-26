@@ -6,10 +6,8 @@ import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -26,7 +24,7 @@ import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class Curseweaver extends Power implements IdlePower {
-
+    private boolean isInDomain = false;
 
     public Curseweaver(Player owner) {
         super(owner);
@@ -49,12 +47,22 @@ public class Curseweaver extends Power implements IdlePower {
             case 0:
                 if (CooldownApi.isOnCooldown("CW-0", p)) return;
                 cleave(p, 0, false);
-                CooldownApi.addCooldown("CW-0", p, 5);
+                CooldownApi.addCooldown("CW-0", p, isInDomain ? 1 : 5);
                 return;
             case 1:
                 if (CooldownApi.isOnCooldown("CW-1", p)) return;
                 blackFlash(p);
-                CooldownApi.addCooldown("CW-1", p, 12);
+                CooldownApi.addCooldown("CW-1", p,  isInDomain ? 2 : 8);
+                return;
+            case 2:
+                if (CooldownApi.isOnCooldown("CW-2", p)) return;
+                domainExpansionBlossom(p);
+                CooldownApi.addCooldown("CW-2", p,  60);
+                return;
+            case 3:
+                if (CooldownApi.isOnCooldown("CW-3", p)) return;
+                crimsonDawn(p);
+                CooldownApi.addCooldown("CW-3", p,   isInDomain ? 5 : 10);
                 return;
         }
     }
@@ -81,7 +89,7 @@ public class Curseweaver extends Power implements IdlePower {
         colors[1] = Color.BLACK;
         colors[2] = Color.fromRGB(61, 61, 61);
 
-        p.playSound(p.getLocation(), Sound.ENTITY_CREEPER_HURT, 1.3f, 2);
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_CREEPER_HURT, 1.3f, 2);
 
         Vector dir = new Vector(r.nextFloat()*2-1, r.nextFloat()*2-1, r.nextFloat()*2-1).normalize();
 
@@ -134,9 +142,9 @@ public class Curseweaver extends Power implements IdlePower {
         Location dest = p.getLocation().clone().add(rotateVector(p.getLocation().getDirection(), rotate).clone().multiply(10));
         Vector v = dest.clone().subtract(p.getLocation().clone()).toVector();
 
-        p.playSound(p.getLocation().clone(), Sound.ENTITY_BREEZE_CHARGE, 1, 1.7f);
-        p.playSound(p.getLocation().clone(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 2);
-        p.playSound(p.getLocation().clone(), Sound.ITEM_FIRECHARGE_USE, 1, 1.6f);
+        p.getWorld().playSound(p.getLocation().clone(), Sound.ENTITY_BREEZE_CHARGE, 1, 1.7f);
+        p.getWorld().playSound(p.getLocation().clone(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1, 2);
+        p.getWorld().playSound(p.getLocation().clone(), Sound.ITEM_FIRECHARGE_USE, 1, 1.6f);
 
         Color[] colors = new Color[3];
         colors[0] = Color.RED;
@@ -202,6 +210,170 @@ public class Curseweaver extends Power implements IdlePower {
         }.runTaskTimer(magicPlugin, 0, 1);
     }
 
+    private void domainExpansionBlossom(Player p){
+        Color[] colors = new Color[3];
+        final Random r = new Random();
+        colors[0] = Color.PURPLE;
+        colors[1] = Color.fromRGB(252, 56, 255);
+        colors[2] = Color.fromRGB(250, 5, 181);
+        p.getWorld().playSound(p.getLocation().clone(), Sound.ITEM_TRIDENT_THUNDER, 1, 2);
+        Location start;
+        if (p.getLocation().clone().add(0, -1, 0).getBlock().isPassable()){
+            start = p.getLocation().clone().add(0, -1, 0);
+        } else {
+            start = p.getLocation().clone();
+        }
+
+        final Vector v = new Vector(1, 0, 0).normalize();
+        for (int i = 0; i< 30; i++){
+            int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (int j = 0; j<360 ;j++){
+                        Location l = start.clone().add(rotateVector(v.clone(), j).clone().normalize().multiply(finalI));
+
+                        if (!l.clone().getBlock().isPassable()){
+                            while (!l.clone().getBlock().isPassable()){
+                                l.add(0, 1, 0);
+                            }
+                        } else {
+                            while (l.clone().add(0, -1, 0).getBlock().isPassable()){
+                                l.add(0, -1, 0);
+                            }
+                        }
+                        particleApi.spawnColoredParticles(l, colors[r.nextInt(colors.length)], 1.2f, 1, 0.01, 0.01, 0.01);
+                    }
+                }
+            }.runTaskLater(magicPlugin, i);
+        }
+        for (int i = 0; i< 30; i++){
+            int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (int j = 0; j<360 ;j++){
+                        Location l = start.clone().add(rotateVector(v.clone(), j).clone().normalize().multiply(finalI).add(new Vector(0, 30-finalI, 0)));
+                        particleApi.spawnColoredParticles(l, colors[r.nextInt(colors.length)], 1.2f, 1, 0.01, 0.01, 0.01);
+                    }
+                }
+            }.runTaskLater(magicPlugin, 60-i);
+        }
+        new BukkitRunnable() {
+            final Location center = start.clone().add(0, 10, 0);
+            final ArrayList<Creature> disabled = new ArrayList<>();
+            final int domainTime = 15;
+
+            @Override
+            public void run() {
+                isInDomain = true;
+                p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, domainTime*20, 2));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, domainTime*20, 1));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, domainTime*20, 0));
+                p.getWorld().playSound(center, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1.2f);
+
+                for (Entity e : p.getWorld().getNearbyEntities(center.clone(), 30, 30, 30)){
+                    if (!(e instanceof LivingEntity) || e.equals(p)){
+                        continue;
+                    }
+                    ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, domainTime*20, 0));
+                    if (e instanceof Creature && !disabled.contains(e) && ((Creature) e).hasAI()){
+                        ((Creature) e).setAI(false);
+                        disabled.add((Creature) e);
+                    }
+                }
+
+                new BukkitRunnable() {
+
+                    double maxTime = domainTime;
+                    int i = 0;
+
+                    @Override
+                    public void run() {
+                        if (i%20==0 && maxTime+(domainTime-6)>domainTime){
+                            particleApi.spawnParticles(center.clone(), Particle.CHERRY_LEAVES, 4000, 30, 30, 30, 1);
+                        }
+
+                        for (Entity e : p.getWorld().getNearbyEntities(center.clone(), 30, 30, 30)){
+                            if (!(e instanceof LivingEntity) || e.equals(p)){
+                                continue;
+                            }
+                            if (e instanceof Creature && !disabled.contains(e) && ((Creature) e).hasAI()){
+                                ((Creature) e).setAI(false);
+                                disabled.add((Creature) e);
+                                ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, (int) (maxTime*20), 0));
+                            }
+                        }
+
+                        if (maxTime<=0){
+                            for (Creature m : disabled){
+                                m.setAI(true);
+                            }
+                            cancel();
+                            isInDomain=false;
+                            return;
+                        }
+                        maxTime-=0.05;
+                        i++;
+                    }
+                }.runTaskTimer(magicPlugin, 0, 1);
+            }
+        }.runTaskLater(magicPlugin, 60);
+    }
+
+    private void crimsonDawn(Player p) {
+        Color[] colors = new Color[2];
+        final Random r = new Random();
+        colors[0] = Color.RED;
+        colors[1] = Color.BLACK;
+        Location start;
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_BELL_RESONATE, 1, 2);
+        if (p.getLocation().clone().add(0, -1, 0).getBlock().isPassable()){
+            start = p.getLocation().clone().add(0, -1, 0);
+        } else {
+            start = p.getLocation().clone();
+        }
+        final Vector v = new Vector(1, 0, 0).normalize();
+        for (int i = 0; i<10; i++){
+            int finalI = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (int j = 0; j<360 ;j++){
+                        Location l = start.clone().add(rotateVector(v.clone(), j).clone().normalize().multiply(finalI));
+
+                        if (!l.clone().getBlock().isPassable()){
+                            while (!l.clone().getBlock().isPassable()){
+                                l.add(0, 1, 0);
+                            }
+                        } else {
+                            while (l.clone().add(0, -1, 0).getBlock().isPassable()){
+                                l.add(0, -1, 0);
+                            }
+                        }
+                        particleApi.spawnColoredParticles(l, colors[r.nextInt(colors.length)], 1.2f, 1, 0.01, 0.01, 0.01);
+                    }
+                }
+            }.runTaskLater(magicPlugin, i);
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Entity e : p.getNearbyEntities(10, 10, 10)){
+                    if (!(e instanceof LivingEntity) || e.equals(p)){
+                        continue;
+                    }
+                    ((LivingEntity) e).damage(2);
+                    e.setVelocity(p.getLocation().clone().subtract(e.getLocation().clone()).toVector().normalize().setY(0.3).multiply(1.4));
+                    particleApi.drawColoredLine(((LivingEntity) e).getEyeLocation().clone(), p.getLocation().clone().add(0, 1, 0), 1, Color.RED, 1, 0);
+                    p.setHealth(Math.min(p.getHealth()+2, p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()));
+                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_FALL, 1, 2f);
+                }
+
+            }
+        }.runTaskLater(magicPlugin, 10);
+    }
+
     @Override
     public BukkitRunnable executeIdle(IdleExecute ex) {
         final Player p = ex.getPlayer();
@@ -223,6 +395,10 @@ public class Curseweaver extends Power implements IdlePower {
                 return "&cCleave";
             case 1:
                 return "&8Black Flash";
+            case 2:
+                return "&dDomain Expansion: Petals of Dusk";
+            case 3:
+                return "&cCrimson Dawn";
             default:
                 return "&7none";
         }
