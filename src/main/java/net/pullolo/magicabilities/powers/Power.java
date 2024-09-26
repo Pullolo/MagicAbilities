@@ -48,6 +48,8 @@ public abstract class Power {
                 return new TwilightMirage(p);
             case ETERNITY:
                 return new Eternity(p);
+            case CURSEWEAVER:
+                return new Curseweaver(p);
             default:
                 return new Power(p) {
                     @Override

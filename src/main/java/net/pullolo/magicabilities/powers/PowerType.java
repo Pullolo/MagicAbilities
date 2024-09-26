@@ -14,5 +14,6 @@ public enum PowerType {
     NATURE,
     NONE,
     TWILIGHT_MIRAGE,
-    ETERNITY
+    ETERNITY,
+    CURSEWEAVER
 }

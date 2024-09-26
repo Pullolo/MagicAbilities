@@ -111,7 +111,7 @@ public class ParticleApi {
 
     public void spawnColoredParticles(Location loc, Color color, float size, int amount, double offsetX, double offsetY, double offsetZ){
         Particle.DustOptions dustOptions = new Particle.DustOptions(color, size);
-        loc.getWorld().spawnParticle(Particle.DUST, loc, amount, offsetX, offsetY, offsetZ, 1, dustOptions);
+        loc.getWorld().spawnParticle(Particle.DUST, loc, amount, offsetX, offsetY, offsetZ, 1, dustOptions, true);
     }
 
     private Vector rotateVector(Vector vector, double whatAngle) {
