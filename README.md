@@ -24,6 +24,7 @@ This plugin adds a variety of amazing superpowers, through just the Spigot Api.
   - 💛 - Nature 🌳
   - ❤️ - Twilight Mirage ☄️
   - 💛 - Eternity ⚔️
+  - 💛 - Curseweaver ✨
 
 
 > [!IMPORTANT]
