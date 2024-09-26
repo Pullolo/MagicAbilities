@@ -47,12 +47,14 @@ public class Curseweaver extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                //if (CooldownApi.isOnCooldown("ICE-DEF", p)) return;
+                if (CooldownApi.isOnCooldown("CW-0", p)) return;
                 cleave(p, 0, false);
-                //CooldownApi.addCooldown("ICE-DEF", p, 1);
+                CooldownApi.addCooldown("CW-0", p, 5);
                 return;
             case 1:
+                if (CooldownApi.isOnCooldown("CW-1", p)) return;
                 blackFlash(p);
+                CooldownApi.addCooldown("CW-1", p, 12);
                 return;
         }
     }
