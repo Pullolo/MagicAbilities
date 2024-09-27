@@ -238,8 +238,13 @@ public class Curseweaver extends Power implements IdlePower {
                                 l.add(0, 1, 0);
                             }
                         } else {
+                            double prevY = l.clone().getY();
                             while (l.clone().add(0, -1, 0).getBlock().isPassable()){
                                 l.add(0, -1, 0);
+                                if (l.getY()<-64){
+                                    l.setY(prevY);
+                                    break;
+                                }
                             }
                         }
                         particleApi.spawnColoredParticles(l, colors[r.nextInt(colors.length)], 1.2f, 1, 0.01, 0.01, 0.01);
@@ -347,8 +352,13 @@ public class Curseweaver extends Power implements IdlePower {
                                 l.add(0, 1, 0);
                             }
                         } else {
+                            double prevY = l.clone().getY();
                             while (l.clone().add(0, -1, 0).getBlock().isPassable()){
                                 l.add(0, -1, 0);
+                                if (l.getY()<-64){
+                                    l.setY(prevY);
+                                    break;
+                                }
                             }
                         }
                         particleApi.spawnColoredParticles(l, colors[r.nextInt(colors.length)], 1.2f, 1, 0.01, 0.01, 0.01);
