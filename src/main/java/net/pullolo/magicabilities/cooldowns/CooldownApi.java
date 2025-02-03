@@ -1,4 +1,4 @@
-package net.pullolo.magicabilities.misc;
+package net.pullolo.magicabilities.cooldowns;
 
 import com.google.common.cache.CacheBuilder;
 import org.bukkit.entity.Player;

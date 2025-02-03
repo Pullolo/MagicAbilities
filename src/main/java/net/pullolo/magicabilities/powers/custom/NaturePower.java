@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
@@ -13,18 +13,18 @@ import org.bukkit.Particle;
 import org.bukkit.TreeType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class NaturePower extends Power implements IdlePower {
+    private static final String nature_tree = "nature.tree";
     public NaturePower(Player owner) {
         super(owner);
     }
@@ -45,9 +45,12 @@ public class NaturePower extends Power implements IdlePower {
     private void onSneak(SneakExecute execute){
         final Player p = execute.getPlayer();
         if (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())!=0) return;
-        if (CooldownApi.isOnCooldown("NATURE-0", p)) return;
+        if (CooldownApi.isOnCooldown(nature_tree, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(nature_tree, p));
+            return;
+        }
         if (p.getWorld().generateTree(p.getLocation().clone().add(p.getLocation().getDirection().clone().setY(0).normalize()), TreeType.values()[new Random().nextInt(TreeType.values().length)])){
-            CooldownApi.addCooldown("NATURE-0", p, 10);
+            CooldownApi.addCooldown(nature_tree, p, cooldowns.get(nature_tree));
         } else p.sendMessage(ChatColor.RED + "Couldn't spawn a tree here!");
     }
 

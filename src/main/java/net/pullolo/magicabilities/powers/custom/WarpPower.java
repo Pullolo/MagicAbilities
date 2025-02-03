@@ -1,12 +1,11 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import net.pullolo.magicabilities.powers.executions.IdleExecute;
 import net.pullolo.magicabilities.powers.executions.LeftClickExecute;
-import net.pullolo.magicabilities.powers.executions.RightClickExecute;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,10 +17,12 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class WarpPower extends Power implements IdlePower {
+    private static final String warp_default = "warp.default";
     protected Location dest;
     public WarpPower(Player owner) {
         super(owner);
@@ -44,16 +45,19 @@ public class WarpPower extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("WARP-DEF", p)) return;
+                if (CooldownApi.isOnCooldown(warp_default, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(warp_default, p));
+                    return;
+                }
                 Location pl = p.getLocation().clone().add(0, 1, 0).add(p.getLocation().getDirection().clone().normalize().multiply(2));
                 ArrayList<Entity> tpEd = new ArrayList<>();
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
                 if ((this instanceof SuperiorWarpPower)) {
-                    CooldownApi.addCooldown("WARP-DEF", p, 120);
+                    CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*((double) 2/3));
                 } else {
-                    CooldownApi.addCooldown("WARP-DEF", p, 180);
+                    CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default));
                 }
                 return;
         }

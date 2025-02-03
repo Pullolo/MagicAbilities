@@ -1,7 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
-import net.pullolo.magicabilities.misc.GeneralMethods;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.Removeable;
@@ -10,22 +9,27 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.*;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class LightningPower extends Power implements IdlePower, Removeable {
+    private static final String lightning_strike = "lightning.strike";
+    private static final String lightning_shot = "lightning.shot";
+    private static final String lightning_field = "lightning.field";
+    private static final String lightning_transmission = "lightning.transmission";
+    private static final String lightning_passive = "lightning.passive";
+
     private BukkitRunnable orbParticles = null;
     private boolean orb = false;
 
@@ -56,7 +60,10 @@ public class LightningPower extends Power implements IdlePower, Removeable {
 
     private void damagedByExecute(DamagedByExecute ex) {
         final Player p = ex.getPlayer();
-        if (CooldownApi.isOnCooldown("LIG-PAS", p)) return;
+        if (CooldownApi.isOnCooldown(lightning_passive, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(lightning_passive, p));
+            return;
+        }
         final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ex.getRawEvent();
         Entity damager = event.getDamager();
         if (!(damager instanceof LivingEntity)) return;
@@ -67,7 +74,7 @@ public class LightningPower extends Power implements IdlePower, Removeable {
         p.getWorld().playSound(p.getLocation().clone().add(p.getLocation().getDirection().clone().normalize().multiply(3)),
                 Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5f, 2);
         for (int i = 0; i<15; i++) electricDischarge(p, 2);
-        CooldownApi.addCooldown("LIG-PAS", p, 30);
+        CooldownApi.addCooldown(lightning_passive, p, cooldowns.get(lightning_passive));
     }
 
     private void electricDischarge(Player p, double rad) {
@@ -105,9 +112,12 @@ public class LightningPower extends Power implements IdlePower, Removeable {
         Entity damaged = ((EntityDamageByEntityEvent) execute.getRawEvent()).getEntity();
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("LIG-1", p)) return;
+                if (CooldownApi.isOnCooldown(lightning_strike, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(lightning_strike, p));
+                    return;
+                }
                 lightningStrike(damaged.getLocation());
-                CooldownApi.addCooldown("LIG-1", p, 20);
+                CooldownApi.addCooldown(lightning_strike, p, cooldowns.get(lightning_strike));
                 return;
         }
         return;
@@ -117,22 +127,31 @@ public class LightningPower extends Power implements IdlePower, Removeable {
         Player p = execute.getPlayer();
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 1:
-                if (CooldownApi.isOnCooldown("LIG-2", p)) return;
+                if (CooldownApi.isOnCooldown(lightning_shot, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(lightning_shot, p));
+                    return;
+                }
                 if (p.isSneaking()) {
                     shootLightningSparks(p, 6);
-                    CooldownApi.addCooldown("LIG-2", p, 4);
+                    CooldownApi.addCooldown(lightning_shot, p, cooldowns.get(lightning_shot));
                     return;
                 }
                 shootLightningSparks(p, 3);
-                CooldownApi.addCooldown("LIG-2", p, 1.5);
+                CooldownApi.addCooldown(lightning_shot, p, cooldowns.get(lightning_shot)/3);
                 return;
             case 2:
                 if (orb) return;
-                if (CooldownApi.isOnCooldown("LIG-3", p)) return;
+                if (CooldownApi.isOnCooldown(lightning_field, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(lightning_field, p));
+                    return;
+                }
                 lightningOrb(p);
                 return;
             case 3:
-                if (CooldownApi.isOnCooldown("LIG-4", p)) return;
+                if (CooldownApi.isOnCooldown(lightning_transmission, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(lightning_transmission, p));
+                    return;
+                }
                 tp(p);
                 return;
         }
@@ -147,7 +166,7 @@ public class LightningPower extends Power implements IdlePower, Removeable {
             if (!p.getEyeLocation().add(p.getEyeLocation().getDirection().clone().normalize().multiply(i)).getBlock().isPassable()){
                 p.teleport(p.getEyeLocation().add(p.getEyeLocation().getDirection().clone().normalize().multiply(i)).clone().add(0, 1, 0));
                 p.getWorld().spawn(p.getLocation(), LightningStrike.class);
-                CooldownApi.addCooldown("LIG-4", p, 20);
+                CooldownApi.addCooldown(lightning_transmission, p, cooldowns.get(lightning_transmission));
                 return;
             }
         }
@@ -195,7 +214,7 @@ public class LightningPower extends Power implements IdlePower, Removeable {
                 i++;
                 if (i>60){
                     remove();
-                    CooldownApi.addCooldown("LIG-3", p, 15);
+                    CooldownApi.addCooldown(lightning_field, p, cooldowns.get(lightning_field));
                 }
             }
         };

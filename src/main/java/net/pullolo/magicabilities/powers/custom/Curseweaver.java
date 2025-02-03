@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
@@ -19,11 +19,17 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class Curseweaver extends Power implements IdlePower {
+    private static final String cw_domain = "curse-weaver.domain";
+    private static final String cw_cleave = "curse-weaver.cleave";
+    private static final String cw_black = "curse-weaver.black";
+    private static final String cw_dawn = "curse-weaver.dawn";
+
     private boolean isInDomain = false;
 
     public Curseweaver(Player owner) {
@@ -46,24 +52,36 @@ public class Curseweaver extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("CW-0", p)) return;
+                if (CooldownApi.isOnCooldown(cw_cleave, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(cw_cleave, p));
+                    return;
+                }
                 cleave(p, 0, false);
-                CooldownApi.addCooldown("CW-0", p, isInDomain ? 1 : 5);
+                CooldownApi.addCooldown(cw_cleave, p, cooldowns.get(cw_cleave) / (isInDomain ? 5 : 1));
                 return;
             case 1:
-                if (CooldownApi.isOnCooldown("CW-1", p)) return;
+                if (CooldownApi.isOnCooldown(cw_black, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(cw_black, p));
+                    return;
+                }
                 blackFlash(p);
-                CooldownApi.addCooldown("CW-1", p,  isInDomain ? 2 : 8);
+                CooldownApi.addCooldown(cw_black, p,  cooldowns.get(cw_black) / (isInDomain ? 4 : 1));
                 return;
             case 2:
-                if (CooldownApi.isOnCooldown("CW-2", p)) return;
+                if (CooldownApi.isOnCooldown(cw_domain, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(cw_domain, p));
+                    return;
+                }
                 domainExpansionBlossom(p);
-                CooldownApi.addCooldown("CW-2", p,  60);
+                CooldownApi.addCooldown(cw_domain, p,  cooldowns.get(cw_domain));
                 return;
             case 3:
-                if (CooldownApi.isOnCooldown("CW-3", p)) return;
+                if (CooldownApi.isOnCooldown(cw_dawn, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(cw_dawn, p));
+                    return;
+                }
                 crimsonDawn(p);
-                CooldownApi.addCooldown("CW-3", p,   isInDomain ? 5 : 10);
+                CooldownApi.addCooldown(cw_dawn, p,   cooldowns.get(cw_dawn) / (isInDomain ? 2 : 1));
                 return;
         }
     }

@@ -1,22 +1,25 @@
 package net.pullolo.magicabilities;
 
 import net.pullolo.magicabilities.commands.*;
+import net.pullolo.magicabilities.cooldowns.Cooldowns;
 import net.pullolo.magicabilities.data.DataEventsHandler;
 import net.pullolo.magicabilities.data.DbManager;
 import net.pullolo.magicabilities.data.PlayerData;
 import net.pullolo.magicabilities.events.ExecutionEvents;
 import net.pullolo.magicabilities.guis.AnimationManager;
 import net.pullolo.magicabilities.guis.GuiManager;
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.misc.ParticleApi;
 import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
@@ -33,14 +36,14 @@ public final class MagicAbilities extends JavaPlugin {
     @Override
     public void onEnable() {
         magicPlugin=this;
-        config = getConfig();
         saveDefaultConfig();
+        config = getConfig();
+        new Cooldowns(createCooldownsConfig());
         particleApi = new ParticleApi(this);
         dbManager = new DbManager(this);
         dbManager.init();
         checkDb(dbManager);
         setPlayerData(dbManager);
-        createCooldowns();
         getServer().getPluginManager().registerEvents(new DataEventsHandler(dbManager), this);
         getServer().getPluginManager().registerEvents(new ExecutionEvents(), this);
         registerCommand(new Binds(), "binds");
@@ -100,45 +103,13 @@ public final class MagicAbilities extends JavaPlugin {
         }
     }
 
-    private void createCooldowns(){
-        CooldownApi.createCooldown("ICE-DEF", 1);
-        CooldownApi.createCooldown("ICE-1", 6.5);
-        CooldownApi.createCooldown("ICE-2", 1.6);
-        CooldownApi.createCooldown("ICE-3", 10);
-        CooldownApi.createCooldown("ICE-4", 3);
-        CooldownApi.createCooldown("ICE-5", 12);
-        CooldownApi.createCooldown("ICE-8", 5);
-        CooldownApi.createCooldown("WARP-DEF", 180);
-        CooldownApi.createCooldown("LIG-1", 20);
-        CooldownApi.createCooldown("LIG-2", 4);
-        CooldownApi.createCooldown("LIG-3", 15);
-        CooldownApi.createCooldown("LIG-4", 20);
-        CooldownApi.createCooldown("LIG-PAS", 30);
-        CooldownApi.createCooldown("UNS-H1", 300);
-        CooldownApi.createCooldown("DJ", 6);
-        CooldownApi.createCooldown("SHOGUN-AB0", 12);
-        CooldownApi.createCooldown("POTATO-0", 30);
-        CooldownApi.createCooldown("POTATO-1", 0.5);
-        CooldownApi.createCooldown("FIRE-0", 2);
-        CooldownApi.createCooldown("FIRE-1", 4);
-        CooldownApi.createCooldown("FIRE-2", 6);
-        CooldownApi.createCooldown("WITCHER-0", 3);
-        CooldownApi.createCooldown("WITCHER-1", 6);
-        CooldownApi.createCooldown("WITCHER-2", 10);
-        CooldownApi.createCooldown("WITCHER-3", 10);
-        CooldownApi.createCooldown("WITCHER-4", 18);
-        CooldownApi.createCooldown("NATURE-0", 10);
-        CooldownApi.createCooldown("TM-0", 180);
-        CooldownApi.createCooldown("TM-1", 20);
-        CooldownApi.createCooldown("TM-2", 3);
-        CooldownApi.createCooldown("TM-3", 4);
-        CooldownApi.createCooldown("TM-4", 30);
-        CooldownApi.createCooldown("ET-0", 2);
-        CooldownApi.createCooldown("ET-1", 40);
-        CooldownApi.createCooldown("ET-2", 1);
-        CooldownApi.createCooldown("CW-0", 5);
-        CooldownApi.createCooldown("CW-1", 8);
-        CooldownApi.createCooldown("CW-2", 60);
-        CooldownApi.createCooldown("CW-3", 10);
+    private FileConfiguration createCooldownsConfig() {
+        File customConfigFile = new File(getDataFolder(), "cooldowns.yml");
+        if (!customConfigFile.exists()) {
+            customConfigFile.getParentFile().mkdirs();
+            saveResource("cooldowns.yml", false);
+        }
+
+        return YamlConfiguration.loadConfiguration(customConfigFile);
     }
 }

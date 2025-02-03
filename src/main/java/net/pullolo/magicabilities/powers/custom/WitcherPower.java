@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.Removeable;
@@ -9,7 +9,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -26,11 +25,16 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
-import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class WitcherPower extends Power implements IdlePower, Removeable {
+    private static final String witcher_igni = "witcher.igni";
+    private static final String witcher_aard = "witcher.aard";
+    private static final String witcher_quen = "witcher.quen";
+    private static final String witcher_aksji = "witcher.aksji";
+    private static final String witcher_yrden = "witcher.yrden";
 
     private boolean shield = false;
     private BukkitRunnable quenParticles = null;
@@ -63,29 +67,44 @@ public class WitcherPower extends Power implements IdlePower, Removeable {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("WITCHER-0", p)) return;
+                if (CooldownApi.isOnCooldown(witcher_igni, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(witcher_igni, p));
+                    return;
+                }
                 igni(p);
-                CooldownApi.addCooldown("WITCHER-0", p, 3);
+                CooldownApi.addCooldown(witcher_igni, p, cooldowns.get(witcher_igni));
                 return;
             case 1:
-                if(CooldownApi.isOnCooldown("WITCHER-1",p)) return;
+                if (CooldownApi.isOnCooldown(witcher_aard, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(witcher_aard, p));
+                    return;
+                }
                 aard(p);
-                CooldownApi.addCooldown("WITCHER-1", p, 6);
+                CooldownApi.addCooldown(witcher_aard, p, cooldowns.get(witcher_aard));
                 return;
             case 2:
                 if (shield) return;
-                if(CooldownApi.isOnCooldown("WITCHER-2",p)) return;
+                if (CooldownApi.isOnCooldown(witcher_quen, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(witcher_quen, p));
+                    return;
+                }
                 quen(p);
                 return;
             case 3:
-                if(CooldownApi.isOnCooldown("WITCHER-3",p)) return;
+                if (CooldownApi.isOnCooldown(witcher_aksji, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(witcher_aksji, p));
+                    return;
+                }
                 aksji(p);
-                CooldownApi.addCooldown("WITCHER-3", p, 10);
+                CooldownApi.addCooldown(witcher_aksji, p, cooldowns.get(witcher_aksji));
                 return;
             case 4:
-                if(CooldownApi.isOnCooldown("WITCHER-4",p)) return;
+                if (CooldownApi.isOnCooldown(witcher_yrden, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(witcher_yrden, p));
+                    return;
+                }
                 yrden(p);
-                CooldownApi.addCooldown("WITCHER-4", p, 18);
+                CooldownApi.addCooldown(witcher_yrden, p, cooldowns.get(witcher_yrden));
                 return;
             default:
                 return;
@@ -148,7 +167,7 @@ public class WitcherPower extends Power implements IdlePower, Removeable {
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1.4f);
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 2);
         player.setVelocity(player.getLocation().getDirection().clone().normalize().multiply(-0.4));
-        CooldownApi.addCooldown("WITCHER-2", player, 10);
+        CooldownApi.addCooldown(witcher_quen, player, cooldowns.get(witcher_quen));
         quenParticles.cancel();
         quenParticles=null;
         shield=false;

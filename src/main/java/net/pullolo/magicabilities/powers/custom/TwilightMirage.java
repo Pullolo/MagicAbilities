@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
@@ -9,7 +9,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,11 +21,16 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class TwilightMirage extends Power implements IdlePower {
+    private static final String tm_shriek = "twilight-mirage.shriek-transition";
+    private static final String tm_float = "twilight-mirage.float";
+    private static final String tm_missile = "twilight-mirage.missile";
+    private static final String tm_healing = "twilight-mirage.healing";
 
     public TwilightMirage(Player owner) {
         super(owner);
@@ -75,24 +79,36 @@ public class TwilightMirage extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("TM-1", p)) return;
+                if (CooldownApi.isOnCooldown(tm_shriek, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(tm_shriek, p));
+                    return;
+                }
                 shriekTransition(p);
-                CooldownApi.addCooldown("TM-1", p, 20);
+                CooldownApi.addCooldown(tm_shriek, p, cooldowns.get(tm_shriek));
                 return;
             case 1:
-                if (CooldownApi.isOnCooldown("TM-2", p)) return;
+                if (CooldownApi.isOnCooldown(tm_float, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(tm_float, p));
+                    return;
+                }
                 twilightFloat(p);
-                CooldownApi.addCooldown("TM-2", p, 3);
+                CooldownApi.addCooldown(tm_float, p, cooldowns.get(tm_float));
                 return;
             case 2:
-                if (CooldownApi.isOnCooldown("TM-3", p)) return;
+                if (CooldownApi.isOnCooldown(tm_missile, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(tm_missile, p));
+                    return;
+                }
                 magicMissile(p, 0);
-                CooldownApi.addCooldown("TM-3", p, 4);
+                CooldownApi.addCooldown(tm_missile, p, cooldowns.get(tm_missile));
                 return;
             case 3:
-                if (CooldownApi.isOnCooldown("TM-4", p)) return;
+                if (CooldownApi.isOnCooldown(tm_healing, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(tm_healing, p));
+                    return;
+                }
                 healingMirage(p);
-                CooldownApi.addCooldown("TM-4", p, 30);
+                CooldownApi.addCooldown(tm_healing, p, cooldowns.get(tm_healing));
                 return;
         }
     }

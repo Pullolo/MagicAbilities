@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
@@ -16,11 +16,16 @@ import org.bukkit.util.Vector;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class Eternity extends Power implements IdlePower {
+    private static final String eternity_immunity = "eternity.immunity";
+    private static final String eternity_oblivion = "eternity.oblivion";
+    private static final String eternity_blink = "eternity.blink";
+
     private double ultMultiplier = 0.8;
     int combo = 0;
     final int reset = 6;
@@ -49,9 +54,12 @@ public class Eternity extends Power implements IdlePower {
         Player p = ex.getPlayer();
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 1:
-                if (CooldownApi.isOnCooldown("ET-2", p)) return;
+                if (CooldownApi.isOnCooldown(eternity_blink, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(eternity_blink, p));
+                    return;
+                }
                 blink(p);
-                CooldownApi.addCooldown("ET-2", p, 1);
+                CooldownApi.addCooldown(eternity_blink, p, cooldowns.get(eternity_blink));
                 return;
         }
     }
@@ -91,9 +99,12 @@ public class Eternity extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("ET-1", p)) return;
+                if (CooldownApi.isOnCooldown(eternity_oblivion, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(eternity_oblivion, p));
+                    return;
+                }
                 ult(p);
-                CooldownApi.addCooldown("ET-1", p, 40);
+                CooldownApi.addCooldown(eternity_oblivion, p, cooldowns.get(eternity_oblivion));
                 return;
         }
     }
@@ -219,9 +230,11 @@ public class Eternity extends Power implements IdlePower {
     }
 
     private void gainImmunity(Player p){
-        if (CooldownApi.isOnCooldown("ET-0", p)) return;
+        if (CooldownApi.isOnCooldown(eternity_immunity, p)) {
+            return;
+        }
         p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, onUlt ? 40 : 20, 255));
-        CooldownApi.addCooldown("ET-0", p, 2);
+        CooldownApi.addCooldown(eternity_immunity, p, cooldowns.get(eternity_immunity));
     }
 
     private void resetCombo(){

@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.ConsumeExecute;
 import net.pullolo.magicabilities.powers.executions.Execute;
@@ -23,10 +23,13 @@ import java.util.HashMap;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class PotatoPower extends Power {
+    private static final String potato_get = "potato.get";
+    private static final String potato_shoot = "potato.shoot";
     public PotatoPower(Player owner) {
         super(owner);
     }
@@ -51,9 +54,12 @@ public class PotatoPower extends Power {
     private void sneakExecute(SneakExecute execute){
         final Player p = execute.getPlayer();
         if (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())!=0) return;
-        if (CooldownApi.isOnCooldown("POTATO-0", p)) return;
+        if (CooldownApi.isOnCooldown(potato_get, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(potato_get, p));
+            return;
+        }
         p.getInventory().addItem(new ItemStack(Material.POTATO, 1));
-        CooldownApi.addCooldown("POTATO-0", p, 30);
+        CooldownApi.addCooldown(potato_get, p, cooldowns.get(potato_get));
         return;
     }
 
@@ -77,10 +83,13 @@ public class PotatoPower extends Power {
         final Player p = execute.getPlayer();
         if (!(p.getInventory().getItemInMainHand().getType().equals(Material.POTATO))) return;
         ((PlayerInteractEvent) execute.getRawEvent()).setCancelled(true);
-        if (CooldownApi.isOnCooldown("POTATO-1", p)) return;
+        if (CooldownApi.isOnCooldown(potato_shoot, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(potato_shoot, p));
+            return;
+        }
         p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-1);
         throwPotato(p);
-        CooldownApi.addCooldown("POTATO-1", p, 0.5);
+        CooldownApi.addCooldown(potato_shoot, p, cooldowns.get(potato_shoot));
     }
 
     private void throwPotato(Player p){

@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.*;
@@ -11,7 +11,6 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,10 +22,13 @@ import java.util.List;
 import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.*;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class UnstablePower extends WarpPower implements IdlePower {
+    private static final String warp_default = "warp.default";
+    private static final String unstable_heal_by_others = "unstable.heal-by-others";
     private final Random random = new Random();
     public UnstablePower(Player owner) {
         super(owner);
@@ -68,18 +70,24 @@ public class UnstablePower extends WarpPower implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("WARP-DEF", p)) return;
+                if (CooldownApi.isOnCooldown(warp_default, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(warp_default, p));
+                    return;
+                }
                 Location pl = p.getLocation().clone().add(0, 1, 0).add(p.getLocation().getDirection().clone().normalize().multiply(2));
                 ArrayList<Entity> tpEd = new ArrayList<>();
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
-                CooldownApi.addCooldown("WARP-DEF", p, 360);
+                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*2);
                 return;
             case 1:
-                if (CooldownApi.isOnCooldown("WARP-DEF", p)) return;
+                if (CooldownApi.isOnCooldown(warp_default, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(warp_default, p));
+                    return;
+                }
                 switchDim(p);
-                CooldownApi.addCooldown("WARP-DEF", p, 360);
+                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*2);
                 return;
         }
     }
@@ -101,10 +109,13 @@ public class UnstablePower extends WarpPower implements IdlePower {
 
     private void onInteracted(InteractedOnByExecute ex) {
         Player p = ex.getPlayer();
-        if (CooldownApi.isOnCooldown("UNS-H1", p)) return;
+        if (CooldownApi.isOnCooldown(unstable_heal_by_others, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(unstable_heal_by_others, p));
+            return;
+        }
         if (random.nextInt(100)==0){
             heal(p);
-            CooldownApi.addCooldown("UNS-H1", p, 300);
+            CooldownApi.addCooldown(unstable_heal_by_others, p, cooldowns.get(unstable_heal_by_others));
         } else if (random.nextInt(38)==0){
             explode(p);
         } else particleApi.spawnParticles(p.getLocation(), Particle.LARGE_SMOKE, 5, 1, 1, 1, 0.2);

@@ -1,0 +1,50 @@
+ice:
+  bolt: 1
+  machine-gun: 6.5
+  spikes: 1.6
+  star: 10
+  multi-bolt: 3
+  slashes: 12
+  phase-change: 5
+warp:
+  default: 180
+lightning:
+  strike: 20
+  shot: 4
+  field: 15
+  transmission: 20
+  passive: 30
+unstable:
+  heal-by-others: 300
+shogun:
+  double-jump: 6
+  dash: 12
+potato:
+  get: 30
+  shoot: 0.5
+fire:
+  blast: 2
+  barrage: 2
+  surge: 6
+witcher:
+  igni: 3
+  aard: 6
+  quen: 10
+  aksji: 10
+  yrden: 18
+nature:
+  tree: 10
+twilight-mirage:
+  shriek-transition: 20
+  float: 3
+  missile: 4
+  healing: 30
+eternity:
+  immunity: 2
+  oblivion: 40
+  blink: 1
+curse-weaver:
+  domain: 60
+  cleave: 5
+  black: 8
+  dawn: 10

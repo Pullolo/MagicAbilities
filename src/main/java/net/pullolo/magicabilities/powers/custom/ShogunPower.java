@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
@@ -14,8 +14,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,11 +24,14 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class ShogunPower extends Power implements IdlePower {
+    private static final String shogun_dash = "shogun.dash";
+    private static final String shogun_double_jump = "shogun.double-jump";
     public ShogunPower(Player owner) {
         super(owner);
     }
@@ -59,9 +60,12 @@ public class ShogunPower extends Power implements IdlePower {
     private void executeRightClick(RightClickExecute ex) {
         final Player player = ex.getPlayer();
         if (!player.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("sword")) return;
-        if(CooldownApi.isOnCooldown("SHOGUN-AB0", player)) return;
+        if(CooldownApi.isOnCooldown(shogun_dash, player)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(shogun_dash, player));
+            return;
+        };
         dash(player);
-        CooldownApi.addCooldown("SHOGUN-AB0", player, 12);
+        CooldownApi.addCooldown(shogun_dash, player, cooldowns.get(shogun_dash));
     }
 
     private void dash(Player p){
@@ -101,10 +105,13 @@ public class ShogunPower extends Power implements IdlePower {
     private void executeDoubleJump(SneakExecute execute){
         final Player p = execute.getPlayer();
         if (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())!=0) return;
-        if (CooldownApi.isOnCooldown("DJ", p)) return;
+        if (CooldownApi.isOnCooldown(shogun_double_jump, p)) {
+            onCooldownInfo(CooldownApi.getCooldownForPlayerLong(shogun_double_jump, p));
+            return;
+        }
         p.setVelocity(p.getLocation().getDirection().clone().normalize().multiply(1.4).add(new Vector(0, 0.3, 0)));
         spawnParticles(p);
-        CooldownApi.addCooldown("DJ", p, 6);
+        CooldownApi.addCooldown(shogun_double_jump, p, cooldowns.get(shogun_double_jump));
         return;
     }
 

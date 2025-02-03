@@ -1,5 +1,8 @@
 package net.pullolo.magicabilities.powers;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.pullolo.magicabilities.powers.custom.*;
 import net.pullolo.magicabilities.powers.executions.Execute;
 import org.bukkit.entity.Player;
@@ -70,5 +73,12 @@ public abstract class Power {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void onCooldownInfo(long time){
+        String s = (float) ((int) time/100)/10 == 0 ? "0.1" : ((float) ((int) time/100)/10 + "");
+
+        owner.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "On cooldown for " +
+                s + "s."));
     }
 }

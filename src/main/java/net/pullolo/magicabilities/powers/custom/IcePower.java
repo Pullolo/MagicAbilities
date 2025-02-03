@@ -1,15 +1,13 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.misc.GeneralMethods;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.*;
 import org.bukkit.*;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -22,12 +20,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class IcePower extends Power implements IdlePower {
+    private static final String ice_bolt = "ice.bolt";
+    private static final String ice_machine_gun = "ice.machine-gun";
+    private static final String ice_spikes = "ice.spikes";
+    private static final String ice_star = "ice.star";
+    private static final String ice_multi_bolt = "ice.multi-bolt";
+    private static final String ice_slashes = "ice.slashes";
+    private static final String ice_phase_change = "ice.phase-change";
+
+
     public IcePower(Player owner) {
         super(owner);
     }
@@ -81,12 +89,18 @@ public class IcePower extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("ICE-DEF", p)) return;
+                if (CooldownApi.isOnCooldown(ice_bolt, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_bolt, p));
+                    return;
+                }
                 shootIce(ex, 1, 0);
-                CooldownApi.addCooldown("ICE-DEF", p, 1);
+                CooldownApi.addCooldown(ice_bolt, p, cooldowns.get(ice_bolt));
                 return;
             case 1:
-                if (CooldownApi.isOnCooldown("ICE-1", p)) return;
+                if (CooldownApi.isOnCooldown(ice_machine_gun, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_machine_gun, p));
+                    return;
+                }
                 for (int i = 0; i < 6; i++){
                     new BukkitRunnable() {
                         @Override
@@ -95,36 +109,51 @@ public class IcePower extends Power implements IdlePower {
                         }
                     }.runTaskLater(magicPlugin, i*10);
                 }
-                CooldownApi.addCooldown("ICE-1", p, 6.5);
+                CooldownApi.addCooldown(ice_machine_gun, p, cooldowns.get(ice_machine_gun));
                 return;
             case 2:
-                if (CooldownApi.isOnCooldown("ICE-2", p)) return;
+                if (CooldownApi.isOnCooldown(ice_spikes, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_spikes, p));
+                    return;
+                }
                 iceSpikesFromBelow(ex, 1.1);
-                CooldownApi.addCooldown("ICE-2", p, 1.6);
+                CooldownApi.addCooldown(ice_spikes, p, cooldowns.get(ice_spikes));
                 return;
             case 3:
-                if (CooldownApi.isOnCooldown("ICE-3", p)) return;
+                if (CooldownApi.isOnCooldown(ice_star, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_star, p));
+                    return;
+                }
                 explode(ex, 1.4);
-                CooldownApi.addCooldown("ICE-3", p, 10);
+                CooldownApi.addCooldown(ice_star, p, cooldowns.get(ice_star));
                 return;
             case 4:
-                if (CooldownApi.isOnCooldown("ICE-4", p)) return;
+                if (CooldownApi.isOnCooldown(ice_multi_bolt, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_multi_bolt, p));
+                    return;
+                }
                 int rotation = -20;
                 for (int i = 0; i<5; i++){
                     shootIce(ex, 0.8, rotation);
                     rotation+=10;
                 }
-                CooldownApi.addCooldown("ICE-4", p, 3);
+                CooldownApi.addCooldown(ice_multi_bolt, p, cooldowns.get(ice_multi_bolt));
                 return;
             case 5:
-                if (CooldownApi.isOnCooldown("ICE-5", p)) return;
+                if (CooldownApi.isOnCooldown(ice_slashes, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_slashes, p));
+                    return;
+                }
                 iceSlash(ex);
-                CooldownApi.addCooldown("ICE-5", p, 12);
+                CooldownApi.addCooldown(ice_slashes, p, cooldowns.get(ice_slashes));
                 return;
             case 8:
-                if (CooldownApi.isOnCooldown("ICE-8", p)) return;
+                if (CooldownApi.isOnCooldown(ice_phase_change, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(ice_phase_change, p));
+                    return;
+                };
                 phaseChange(ex);
-                CooldownApi.addCooldown("ICE-8", p, 5);
+                CooldownApi.addCooldown(ice_phase_change, p, cooldowns.get(ice_phase_change));
                 return;
 
         }

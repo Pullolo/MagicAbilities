@@ -1,6 +1,6 @@
 package net.pullolo.magicabilities.powers.custom;
 
-import net.pullolo.magicabilities.misc.CooldownApi;
+import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.powers.IdlePower;
 import net.pullolo.magicabilities.powers.Power;
 import net.pullolo.magicabilities.powers.executions.Execute;
@@ -22,11 +22,16 @@ import java.util.Random;
 
 import static net.pullolo.magicabilities.MagicAbilities.magicPlugin;
 import static net.pullolo.magicabilities.MagicAbilities.particleApi;
+import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
 import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class FirePower extends Power implements IdlePower {
+    private static final String fire_blast = "fire.blast";
+    private static final String fire_barrage = "fire.barrage";
+    private static final String fire_surge = "fire.surge";
+
     public FirePower(Player owner) {
         super(owner);
     }
@@ -47,26 +52,35 @@ public class FirePower extends Power implements IdlePower {
         }
         switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
             case 0:
-                if (CooldownApi.isOnCooldown("FIRE-0", p)) return;
+                if (CooldownApi.isOnCooldown(fire_blast, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(fire_blast, p));
+                    return;
+                }
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
                 fireBlast(execute, 1, 0);
-                CooldownApi.addCooldown("FIRE-0", p, 2);
+                CooldownApi.addCooldown(fire_blast, p, cooldowns.get(fire_blast));
                 return;
             case 1:
-                if (CooldownApi.isOnCooldown("FIRE-1", p)) return;
+                if (CooldownApi.isOnCooldown(fire_barrage, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(fire_barrage, p));
+                    return;
+                }
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
                 int rotation = -20;
                 for (int i = 0; i<5; i++){
                     fireBlast(execute, 0.8, rotation);
                     rotation+=10;
                 }
-                CooldownApi.addCooldown("FIRE-1", p, 2);
+                CooldownApi.addCooldown(fire_barrage, p, cooldowns.get(fire_barrage));
                 return;
             case 2:
-                if (CooldownApi.isOnCooldown("FIRE-2", p)) return;
+                if (CooldownApi.isOnCooldown(fire_surge, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(fire_surge, p));
+                    return;
+                }
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1.5f);
                 fireSurge(execute);
-                CooldownApi.addCooldown("FIRE-2", p, 6);
+                CooldownApi.addCooldown(fire_surge, p, cooldowns.get(fire_surge));
                 return;
             default:
                 return;
