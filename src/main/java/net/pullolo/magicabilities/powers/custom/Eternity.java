@@ -37,6 +37,7 @@ public class Eternity extends Power implements IdlePower {
 
     @Override
     public void executePower(Execute ex) {
+        if (!isEnabled()) return;
         if (ex instanceof DealDamageExecute){
             onDamage((DealDamageExecute) ex);
             return;
