@@ -22,9 +22,17 @@ public class Setpower implements CommandExecutor, TabCompleter {
         }
         if (args.length!=2) return false;
         try {
-            Player target = Bukkit.getPlayer(args[0]);
+            ArrayList<Player> targets;
+            if (args[0].equalsIgnoreCase("@a")){
+                targets = new ArrayList<>(Bukkit.getOnlinePlayers());
+            } else {
+                targets = new ArrayList<>();
+                targets.add(Bukkit.getPlayer(args[0]));
+            }
             PowerType p = PowerType.valueOf(args[1].toUpperCase());
-            players.get(target).changePower(p);
+            for (Player target : targets){
+                players.get(target).changePower(p);
+            }
             sender.sendMessage(ChatColor.GREEN + "Success!");
         } catch (Exception e){
             sender.sendMessage(ChatColor.RED + "Something went wrong!");
@@ -39,6 +47,7 @@ public class Setpower implements CommandExecutor, TabCompleter {
         }
         if (args.length==1){
             ArrayList<String> completion = new ArrayList<>();
+            addToCompletion("@a", args[0], completion);
             for (Player p : Bukkit.getOnlinePlayers()){
                 addToCompletion(p.getName(), args[0], completion);
             }

@@ -95,16 +95,22 @@ public class UnstablePower extends WarpPower implements IdlePower {
     private void onDamage(DamagedExecute execute) {
         Player p = execute.getPlayer();
         EntityDamageEvent event = (EntityDamageEvent) execute.getRawEvent();
-        if (random.nextBoolean()) glitch(p, 10, 3);
-        if (random.nextInt(50)==0) switchDim(p);
-        if (random.nextInt(50)==0) p.setFireTicks(60);
+        if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL) && random.nextInt(3)==0){
+            event.setCancelled(true);
+            return;
+        }
         if (event.getFinalDamage()>p.getHealth() && random.nextInt(5)==0){
             event.setCancelled(true);
             p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 1, 1);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 1));
+            p.setFireTicks(0);
             particleApi.spawnParticles(p.getLocation(), Particle.TOTEM_OF_UNDYING, 100, 0.4, 0.4, 0.4, 0.3);
             explode(p);
             return;
         }
+        if (random.nextBoolean()) glitch(p, 10, 3);
+        if (random.nextInt(50)==0) switchDim(p);
+        if (random.nextInt(50)==0) p.setFireTicks(60);
     }
 
     private void onInteracted(InteractedOnByExecute ex) {
