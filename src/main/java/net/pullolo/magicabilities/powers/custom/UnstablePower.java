@@ -79,7 +79,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
                 notifyPlayers(p, pl, getDest().clone().add(0, 1, 0));
                 openRift(pl, getDest().clone().add(0, 1, 0), tpEd, 15);
                 openRift(getDest().clone().add(0, 1, 0), pl, tpEd, 15);
-                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*2);
+                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*1.2);
                 return;
             case 1:
                 if (CooldownApi.isOnCooldown(warp_default, p)) {
@@ -87,7 +87,7 @@ public class UnstablePower extends WarpPower implements IdlePower {
                     return;
                 }
                 switchDim(p);
-                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*2);
+                CooldownApi.addCooldown(warp_default, p, cooldowns.get(warp_default)*1.2);
                 return;
         }
     }
@@ -113,10 +113,10 @@ public class UnstablePower extends WarpPower implements IdlePower {
             onCooldownInfo(CooldownApi.getCooldownForPlayerLong(unstable_heal_by_others, p));
             return;
         }
-        if (random.nextInt(100)==0){
+        if (random.nextInt(40)==0){
             heal(p);
             CooldownApi.addCooldown(unstable_heal_by_others, p, cooldowns.get(unstable_heal_by_others));
-        } else if (random.nextInt(38)==0){
+        } else if (random.nextInt(70)==0){
             explode(p);
         } else particleApi.spawnParticles(p.getLocation(), Particle.LARGE_SMOKE, 5, 1, 1, 1, 0.2);
     }
@@ -163,8 +163,9 @@ public class UnstablePower extends WarpPower implements IdlePower {
     public void onEat(Player p, Material item){
         p.addPotionEffect(new PotionEffect(PotionEffectType.values()[random.nextInt(PotionEffectType.values().length)], 100, 10));
         nearTp(p, 2);
-        if (item.equals(Material.GOLDEN_APPLE)){
+        if (item.equals(Material.GOLDEN_APPLE) || random.nextInt(10)==0){
             heal(p);
+            return;
         }
         if (item.equals(Material.ENCHANTED_GOLDEN_APPLE)){
             for (int i =0; i<10;i++) heal(p);
