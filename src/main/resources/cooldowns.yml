@@ -16,6 +16,7 @@ lightning:
   passive: 30
 unstable:
   heal-by-others: 300
+  heal-self: 60
 shogun:
   double-jump: 6
   dash: 12

@@ -24,11 +24,13 @@ import java.util.Random;
 import static net.pullolo.magicabilities.MagicAbilities.*;
 import static net.pullolo.magicabilities.cooldowns.Cooldowns.cooldowns;
 import static net.pullolo.magicabilities.data.PlayerData.getPlayerData;
+import static net.pullolo.magicabilities.misc.GeneralMethods.rotateVector;
 import static net.pullolo.magicabilities.players.PowerPlayer.players;
 
 public class UnstablePower extends WarpPower implements IdlePower {
     private static final String warp_default = "warp.default";
     private static final String unstable_heal_by_others = "unstable.heal-by-others";
+    private static final String unstable_heal_self = "unstable.heal-self";
     private final Random random = new Random();
     public UnstablePower(Player owner) {
         super(owner);
@@ -57,10 +59,57 @@ public class UnstablePower extends WarpPower implements IdlePower {
             return;
         }
         if (!isEnabled()) return;
+        if (ex instanceof SneakExecute){
+            executeSneak((SneakExecute) ex);
+            return;
+        }
         if (ex instanceof LeftClickExecute){
             executeLeftClick((LeftClickExecute) ex);
             return;
         }
+    }
+
+    private void executeSneak(SneakExecute ex) {
+        final Player p = ex.getPlayer();
+        if (!p.equals(getOwner())){
+            throw new RuntimeException("Event player does not match the power owner!");
+        }
+        switch (getPlayerData(p).getBinds().get(players.get(p).getActiveSlot())){
+            case 2:
+                if (CooldownApi.isOnCooldown(unstable_heal_self, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(unstable_heal_self, p));
+                    return;
+                }
+                healSelf(p);
+                CooldownApi.addCooldown(unstable_heal_self, p, cooldowns.get(unstable_heal_self));
+                return;
+        }
+    }
+
+    private void healSelf(Player p){
+        if (random.nextInt(200)==0) {
+            glitch(p, 10, 3);
+            return;
+        }
+        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1.7f);
+        heal(p);
+        new BukkitRunnable() {
+            int i = 0;
+            final int length = 20;
+            @Override
+            public void run() {
+                i++;
+
+                Location l = p.getLocation().clone().add(0, ((double) i*2/length), 0);
+                particleApi.spawnColoredParticles(l.clone().add(rotateVector(new Vector(1, 0, 0), i*10)), Color.LIME, 1, 1, 0, 0, 0);
+                particleApi.spawnColoredParticles(l.clone().add(rotateVector(new Vector(-1, 0, 0), i*10)), Color.LIME, 1, 1, 0, 0, 0);
+
+                if (i>length){
+                    cancel();
+                    return;
+                }
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
     }
 
     private void executeLeftClick(LeftClickExecute ex){
@@ -268,6 +317,8 @@ public class UnstablePower extends WarpPower implements IdlePower {
                 return "&dRift";
             case 1:
                 return "&dSwitch Dimension";
+            case 2:
+                return "&aSmall Heal";
             default:
                 return "&7none";
         }
