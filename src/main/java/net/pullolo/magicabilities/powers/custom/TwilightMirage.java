@@ -272,7 +272,7 @@ public class TwilightMirage extends Power implements IdlePower {
             ((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 300, 0));
         }
         if (e instanceof Warden){
-            event.setDamage(((Warden) e).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/2);
+            event.setDamage(((Warden) e).getAttribute(Attribute.MAX_HEALTH).getBaseValue()/2);
             return;
         }
     }

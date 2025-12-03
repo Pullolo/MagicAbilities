@@ -1,9 +1,7 @@
 package net.pullolo.magicabilities.commands;
 
 import net.pullolo.magicabilities.powers.custom.WarpPower;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,7 +49,16 @@ public class Destination implements CommandExecutor, TabCompleter {
         }
         if (args.length==3){
             try {
-                ((WarpPower) players.get(p).getPower()).setDest(new Location(p.getWorld(), Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])));
+                Location dest = new Location(p.getWorld(), Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]));
+                if (p.getLocation().distance(dest)>20000){
+                    p.sendMessage(ChatColor.RED + "Distance is to large!");
+                    return true;
+                }
+                if (!isInsideWorldBorder(dest)){
+                    p.sendMessage(ChatColor.RED + "Cant set destination outside the world border!");
+                    return true;
+                }
+                ((WarpPower) players.get(p).getPower()).setDest(dest);
                 p.sendMessage(ChatColor.GREEN + "Destination set!");
                 return true;
             } catch (Exception e){
@@ -60,6 +67,22 @@ public class Destination implements CommandExecutor, TabCompleter {
             }
         }
         return true;
+    }
+
+    private boolean isInsideWorldBorder(Location loc) {
+        World world = loc.getWorld();
+        if (world == null) {
+            return false;
+        }
+
+        WorldBorder border = world.getWorldBorder();
+        Location center = border.getCenter();
+        double size = border.getSize() / 2.0;
+
+        double x = loc.getX() - center.getX();
+        double z = loc.getZ() - center.getZ();
+
+        return Math.abs(x) <= size && Math.abs(z) <= size;
     }
 
     @Override

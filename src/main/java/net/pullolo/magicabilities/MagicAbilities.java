@@ -12,6 +12,8 @@ import net.pullolo.magicabilities.cooldowns.CooldownApi;
 import net.pullolo.magicabilities.misc.ParticleApi;
 import net.pullolo.magicabilities.players.PowerPlayer;
 import net.pullolo.magicabilities.powers.Power;
+import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,6 +55,8 @@ public final class MagicAbilities extends JavaPlugin {
         registerCommand(new Disable(), "disable");
         final GuiManager guiManager = new GuiManager(this);
         final AnimationManager animationManager = new AnimationManager(this, guiManager);
+
+        particleApi.spawnParticles(Bukkit.getWorlds().get(0).getSpawnLocation(), Particle.ASH, 1, 1, 1, 1, 1);
     }
 
     @Override

@@ -231,8 +231,8 @@ public class UnstablePower extends WarpPower implements IdlePower {
         Player p = execute.getPlayer();
         PlayerDeathEvent event = (PlayerDeathEvent) execute.getRawEvent();
         explode(p);
-        if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()<3){
-            p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2);
+        if (p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()<3){
+            p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(2);
             event.setKeepInventory(false);
             event.setKeepLevel(false);
 
@@ -240,17 +240,17 @@ public class UnstablePower extends WarpPower implements IdlePower {
             event.setKeepInventory(true);
             event.setKeepLevel(true);
             event.getDrops().clear();
-            p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()-2);
+            p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()-2);
         }
     }
 
     private void heal(Player p){
         particleApi.spawnParticles(p.getLocation(), Particle.HAPPY_VILLAGER, 30, 0.3, 0.3, 0.3, 1);
-        if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()<20){
-            p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()+2);
+        if (p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()<20){
+            p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()+2);
         }
-        if (p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()>20){
-            p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        if (p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()>20){
+            p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
         }
     }
 

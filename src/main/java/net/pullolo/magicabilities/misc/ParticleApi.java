@@ -106,7 +106,8 @@ public class ParticleApi {
     }
 
     public void spawnParticles(Location loc, Particle particle, int amount, double offsetX, double offsetY, double offsetZ, double speed){
-        loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed);
+        //todo error
+        loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, null);
     }
 
     public void spawnColoredParticles(Location loc, Color color, float size, int amount, double offsetX, double offsetY, double offsetZ){

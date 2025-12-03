@@ -395,7 +395,7 @@ public class Curseweaver extends Power implements IdlePower {
                     ((LivingEntity) e).damage(2);
                     e.setVelocity(p.getLocation().clone().subtract(e.getLocation().clone()).toVector().normalize().setY(0.3).multiply(1.4));
                     particleApi.drawColoredLine(((LivingEntity) e).getEyeLocation().clone(), p.getLocation().clone().add(0, 1, 0), 1, Color.RED, 1, 0);
-                    p.setHealth(Math.min(p.getHealth()+2, p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()));
+                    p.setHealth(Math.min(p.getHealth()+2, p.getAttribute(Attribute.MAX_HEALTH).getBaseValue()));
                     p.getWorld().playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_FALL, 1, 2f);
                 }
 
@@ -409,8 +409,7 @@ public class Curseweaver extends Power implements IdlePower {
         BukkitRunnable r = new BukkitRunnable() {
             @Override
             public void run() {
-                particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0),
-                        Particle.DRAGON_BREATH, 8, 0.1, 0.1, 0.1, 0.07);
+                particleApi.spawnParticles(p.getLocation().clone().add(0, 1, 0), Particle.ENCHANTED_HIT, 8, 0.1, 0.1, 0.1, 0.07);
             }
         };
         r.runTaskTimer(magicPlugin, 0, 15);
