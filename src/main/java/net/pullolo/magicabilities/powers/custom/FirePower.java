@@ -17,6 +17,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -31,6 +33,7 @@ public class FirePower extends Power implements IdlePower {
     private static final String fire_blast = "fire.blast";
     private static final String fire_barrage = "fire.barrage";
     private static final String fire_surge = "fire.surge";
+    private static final String divine_flame = "fire.flame";
 
     public FirePower(Player owner) {
         super(owner);
@@ -82,9 +85,127 @@ public class FirePower extends Power implements IdlePower {
                 fireSurge(execute);
                 CooldownApi.addCooldown(fire_surge, p, cooldowns.get(fire_surge));
                 return;
+            case 3:
+                if (CooldownApi.isOnCooldown(divine_flame, p)) {
+                    onCooldownInfo(CooldownApi.getCooldownForPlayerLong(divine_flame, p));
+                    return;
+                }
+                divine_flame(execute);
+                CooldownApi.addCooldown(divine_flame, p, cooldowns.get(divine_flame));
+                return;
             default:
                 return;
         }
+    }
+
+    private void divine_flame(LeftClickExecute execute) {
+        Player p = execute.getPlayer();
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1, 0.8f);
+
+        BukkitRunnable shot = new BukkitRunnable() {
+            int i = 0;
+            Location start;
+            Vector vec;
+
+            private void explode(){
+                particleApi.spawnParticles(start, Particle.FLAME, 300, 0.3, 0.3, 0.3, 2);
+                try {
+                    Collection<Entity> entities = start.clone().getWorld().getNearbyEntities(start.clone(), 6, 6, 6);
+
+                    for (Entity entity : entities){
+                        if (entity.equals(p)) continue;
+                        if (entity instanceof LivingEntity){
+                            entity.setFireTicks(80);
+                            ((LivingEntity) entity).damage(30);
+                        }
+                    }
+                    start.getWorld().playSound(start, Sound.ENTITY_PLAYER_HURT_ON_FIRE, 1, 1.3f);
+                    start.getWorld().playSound(start, Sound.ENTITY_GENERIC_EXPLODE, 1, 1.3f);
+                    start.getWorld().playSound(start, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1f);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                cancel();
+            }
+
+            @Override
+            public void run() {
+                if (i==0){
+                    start = p.getEyeLocation().clone();
+                    vec = p.getEyeLocation().getDirection().normalize();
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1, 1.2f);
+                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 2f);
+                }
+                if (i>10){
+                    cancel();
+                    return;
+                }
+
+                for (int j = 0; j<10; j++){
+                    start.add(vec);
+                    particleApi.spawnParticles(start, Particle.FLAME, 10, 0.1, 0.1, 0.1, 0.1);
+
+                    if (!start.getBlock().isPassable()) explode();
+
+                    for (Entity entity : start.clone().getChunk().getEntities()){
+                        if (start.clone().distanceSquared(entity.getLocation()) <= 3.8){
+                            if (!entity.equals(p)){
+                                if (entity instanceof LivingEntity){
+                                    entity.setFireTicks(80);
+                                    explode();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                i++;
+            }
+        };
+
+        new BukkitRunnable() {
+            int i = 80;
+            double speed;
+            @Override
+            public void run() {
+                if (i<1) {
+                    cancel();
+                    shot.runTaskTimer(magicPlugin, 0, 1);
+                    return;
+                }
+
+                if (i % 20 ==0){
+                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_BLASTFURNACE_FIRE_CRACKLE, 1, 2);
+                }
+
+                if (i % 10 == 0){
+                    p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1,  1.2f);
+                }
+
+                if (i==20) {
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, 1, 1.2f);
+                }
+
+                speed = 4 - ((double) 80/i)*2;
+
+                Location effectMainPos = p.getEyeLocation().clone().add(p.getEyeLocation().getDirection().setY(0).normalize().clone());
+                Location l1 = effectMainPos.clone().add(new Vector(0, (double) i/50, 0).rotateAroundAxis(p.getEyeLocation().getDirection().setY(0).normalize(), Math.toRadians(i*speed)));
+                Location l2 = effectMainPos.clone().add(new Vector(0, (double) i/50, 0).rotateAroundAxis(p.getEyeLocation().getDirection().setY(0).normalize(), Math.toRadians(i*speed+90)));
+
+                Location l3 = effectMainPos.clone().add(new Vector(0, (double) i/50, 0).rotateAroundAxis(p.getEyeLocation().getDirection().setY(0).normalize(), Math.toRadians(i*speed+180)));
+                Location l4 = effectMainPos.clone().add(new Vector(0, (double) i/50, 0).rotateAroundAxis(p.getEyeLocation().getDirection().setY(0).normalize(), Math.toRadians(i*speed+270)));
+
+                particleApi.spawnParticles(l1, Particle.FLAME, 3, 0.03, 0.03, 0.03, 0);
+                particleApi.spawnParticles(l2, Particle.FLAME, 3, 0.03, 0.03, 0.03, 0);
+                particleApi.spawnParticles(l3, Particle.FLAME, 3, 0.03, 0.03, 0.03, 0);
+                particleApi.spawnParticles(l4, Particle.FLAME, 3, 0.03, 0.03, 0.03, 0);
+
+                particleApi.spawnParticles(p.getLocation().add(0, 1, 0), Particle.FLAME, (int) ((double) 80/(i*10))+1, 0.03, 0.03, 0.03, 1);
+
+
+                i--;
+            }
+        }.runTaskTimer(magicPlugin, 0, 1);
     }
 
     private void fireSurge(LeftClickExecute execute){
@@ -275,6 +396,8 @@ public class FirePower extends Power implements IdlePower {
                 return "&cFire Barrage";
             case 2:
                 return "&cFire Surge";
+            case 3:
+                return "&cDivine Flame";
             default:
                 return "&7none";
         }

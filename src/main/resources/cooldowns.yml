@@ -27,6 +27,7 @@ fire:
   blast: 2
   barrage: 2
   surge: 6
+  flame: 45
 witcher:
   igni: 3
   aard: 6
